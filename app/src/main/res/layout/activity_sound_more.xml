@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:ignore="TooManyViews">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_scrollFlags="scroll|enterAlways">
+
+            <TextView
+                android:id="@+id/toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textColor="#ffffff"
+                android:textSize="@dimen/s22_size" />
+
+        </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/setting_play_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/d14_size"
+            android:layout_marginStart="@dimen/d24_size"
+            android:text="@string/selected_sound_effects"
+            android:textColor="?attr/colorAccent"
+            android:textSize="@dimen/s12_size" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/d16_size"
+            android:background="@drawable/bg_setting_item"
+            android:divider="@drawable/bg_setting_drivier"
+            android:orientation="vertical"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:showDividers="middle">
+
+            <LinearLayout
+                android:id="@+id/sound_7"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/background_rect_ripple"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="@dimen/d16_size"
+                android:paddingVertical="@dimen/d10_size">
+
+                <TextView
+                    android:id="@+id/text1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/d2_size"
+                    android:text="KTV"
+                    android:textColor="?attr/text_color_primary"
+                    android:textSize="@dimen/s16_size" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <ImageView
+                    android:id="@+id/image1"
+                    android:layout_width="@dimen/d24_size"
+                    android:layout_height="@dimen/d24_size"
+                    android:layout_marginBottom="@dimen/d2_size"
+                    android:src="@drawable/more_select" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/sound_8"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/background_rect_ripple"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="@dimen/d16_size"
+                android:paddingVertical="@dimen/d10_size">
+
+                <TextView
+                    android:id="@+id/text2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/d2_size"
+                    android:text="演唱会"
+                    android:textColor="?attr/text_color_primary"
+                    android:textSize="@dimen/s16_size" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <ImageView
+                    android:id="@+id/image2"
+                    android:layout_width="@dimen/d24_size"
+                    android:layout_height="@dimen/d24_size"
+                    android:layout_marginBottom="@dimen/d2_size"
+                    android:src="@drawable/more_select"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/sound_9"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/background_rect_ripple"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="@dimen/d16_size"
+                android:paddingVertical="@dimen/d10_size">
+
+                <TextView
+                    android:id="@+id/text3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/d2_size"
+                    android:text="浴室"
+                    android:textColor="?attr/text_color_primary"
+                    android:textSize="@dimen/s16_size" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <ImageView
+                    android:id="@+id/image3"
+                    android:layout_width="@dimen/d24_size"
+                    android:layout_height="@dimen/d24_size"
+                    android:layout_marginBottom="@dimen/d2_size"
+
+                    android:src="@drawable/more_select"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/sound_4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/background_rect_ripple"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="@dimen/d16_size"
+                android:paddingVertical="@dimen/d10_size">
+
+                <TextView
+                    android:id="@+id/text4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/d2_size"
+                    android:text="音乐厅"
+                    android:textColor="?attr/text_color_primary"
+                    android:textSize="@dimen/s16_size" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <ImageView
+                    android:id="@+id/image4"
+                    android:layout_width="@dimen/d24_size"
+
+                    android:layout_height="@dimen/d24_size"
+                    android:layout_marginBottom="@dimen/d2_size"
+                    android:src="@drawable/more_select"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/sound_5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/background_rect_ripple"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="@dimen/d16_size"
+                android:paddingVertical="@dimen/d10_size">
+
+                <TextView
+                    android:id="@+id/text5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/d2_size"
+                    android:text="健身房"
+                    android:textColor="?attr/text_color_primary"
+                    android:textSize="@dimen/s16_size" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <ImageView
+                    android:id="@+id/image5"
+                    android:layout_width="@dimen/d24_size"
+                    android:layout_height="@dimen/d24_size"
+                    android:layout_marginBottom="@dimen/d2_size"
+                    android:src="@drawable/more_select"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/sound_6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/background_rect_ripple"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="@dimen/d16_size"
+                android:paddingVertical="@dimen/d10_size">
+
+                <TextView
+                    android:id="@+id/text6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/d2_size"
+                    android:text="图书馆"
+                    android:textColor="?attr/text_color_primary"
+                    android:textSize="@dimen/s16_size" />
+
+                <View
+                    android:id="@+id/image6"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <ImageView
+                    android:layout_width="@dimen/d24_size"
+                    android:layout_height="@dimen/d24_size"
+                    android:layout_marginBottom="@dimen/d2_size"
+                    android:src="@drawable/more_select"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
+
+            <!--        <RelativeLayout-->
+            <!--          android:id="@+id/setting_immersive_container"-->
+            <!--          android:layout_width="match_parent"-->
+            <!--          android:layout_height="wrap_content"-->
+            <!--          android:background="?attr/background_rect_ripple"-->
+            <!--          android:paddingVertical="@dimen/d10_size">-->
+
+            <!--          <LinearLayout-->
+            <!--            android:layout_width="match_parent"-->
+            <!--            android:layout_height="wrap_content"-->
+            <!--            android:layout_centerVertical="true"-->
+            <!--            android:layout_marginHorizontal="@dimen/d16_size"-->
+            <!--            android:layout_toStartOf="@+id/setting_immersive_switch"-->
+            <!--            android:gravity="center_vertical"-->
+            <!--            android:orientation="vertical">-->
+
+            <!--            <TextView-->
+            <!--              android:layout_width="wrap_content"-->
+            <!--              android:layout_height="wrap_content"-->
+            <!--              android:layout_marginBottom="@dimen/d2_size"-->
+            <!--              android:text="@string/immersive"-->
+            <!--              android:textColor="?attr/text_color_primary"-->
+            <!--              android:textSize="@dimen/s16_size" />-->
+
+            <!--            <TextView-->
+            <!--              android:layout_width="wrap_content"-->
+            <!--              android:layout_height="wrap_content"-->
+            <!--              android:text="@string/immersive_tip"-->
+            <!--              android:textColor="?attr/text_color_secondary"-->
+            <!--              android:textSize="@dimen/s14_size" />-->
+            <!--          </LinearLayout>-->
+
+            <!--          <androidx.appcompat.widget.SwitchCompat-->
+            <!--            android:id="@+id/setting_immersive_switch"-->
+            <!--            android:layout_width="wrap_content"-->
+            <!--            android:layout_height="wrap_content"-->
+            <!--            android:layout_alignParentEnd="true"-->
+            <!--            android:layout_centerVertical="true"-->
+            <!--            android:layout_marginEnd="@dimen/d14_size"-->
+            <!--            android:textOff=""-->
+            <!--            android:textOn="" />-->
+            <!--        </RelativeLayout>-->
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</LinearLayout>

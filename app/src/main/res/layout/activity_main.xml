@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/drawer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/appbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <include layout="@layout/toolbar" />
+
+                <!--<com.google.android.material.tabs.TabLayout
+                  android:id="@+id/tabs"
+                  android:layout_width="match_parent"
+                  android:layout_height="@dimen/tab_height"/>-->
+
+                <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/layout_player_topbar_height"
+                    android:id="@+id/top_searchbar">
+
+                    <ImageButton
+                        android:layout_width="@dimen/d40_size"
+                        android:layout_height="@dimen/d40_size"
+                        android:layout_marginLeft="@dimen/d8_size"
+                        android:layout_centerVertical="true"
+                        android:background="@color/transparent"
+                        android:src="@drawable/icon_player_back"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:visibility="gone"
+                        android:id="@+id/top_hide"
+                        android:layout_alignParentLeft="true"/>
+
+                    <!--  <ImageButton-->
+                    <!--    android:layout_width="@dimen/d40_size"-->
+                    <!--    android:layout_height="@dimen/d40_size"-->
+                    <!--    android:layout_marginRight="@dimen/d8_size"-->
+                    <!--    android:layout_centerVertical="true"-->
+                    <!--    android:background="@color/transparent"-->
+                    <!--    android:src="@drawable/icon_player_more"-->
+                    <!--    android:id="@+id/top_more"-->
+                    <!--    android:layout_alignParentRight="true"/>-->
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_centerHorizontal="true"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/top_commit"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:layout_marginTop="@dimen/d12_size"
+                        android:layout_marginStart="@dimen/d20_size"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:id="@+id/top_search"
+                        android:background="@drawable/search_bg_white"
+                        android:layout_marginBottom="@dimen/d6_size"/>
+
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        app:layout_constraintDimensionRatio="1:1"
+                        app:layout_constraintStart_toStartOf="@id/top_search"
+                        app:layout_constraintTop_toTopOf="@id/top_search"
+                        app:layout_constraintBottom_toBottomOf="@id/top_search"
+                        android:layout_marginStart="@dimen/d16_size"
+                        android:layout_marginTop="@dimen/d8_size"
+                        android:src="@drawable/ic_player_topbar_search"
+                        android:layout_marginBottom="@dimen/d8_size"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toTopOf="@id/top_search"
+                        app:layout_constraintBottom_toBottomOf="@id/top_search"
+                        android:layout_marginStart="@dimen/d48_size"
+                        app:layout_constraintStart_toStartOf="@id/top_search"
+                        android:text="搜索歌曲、歌手、专辑"
+                        android:textColor="#9b9b9b"/>
+
+                    <ImageView
+                        android:id="@+id/top_commit"
+                        android:layout_width="@dimen/d24_size"
+                        android:layout_height="@dimen/d24_size"
+                        app:layout_constraintDimensionRatio="1:1"
+                        app:layout_constraintStart_toEndOf="@id/top_search"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/top_search"
+                        android:src="@drawable/ic_player_topbar_commit"
+                        app:layout_constraintBottom_toBottomOf="@id/top_search"
+                        android:layout_marginStart="@dimen/d16_size"
+                        android:layout_marginEnd="@dimen/d16_size"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout1"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/tabs"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="12dp"
+                        android:layout_marginStart="@dimen/d16_size"
+                        android:layout_marginEnd="@dimen/d16_size">
+
+                        <LinearLayout
+                            android:id="@+id/main_tabs_music"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:gravity="center_horizontal"
+                            android:orientation="vertical"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/main_tabs_album"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <ImageView
+                                android:layout_width="@dimen/d48_size"
+                                android:src="@drawable/main_tab_music"
+                                android:layout_height="@dimen/d48_size" />
+
+                            <TextView
+                                android:id="@+id/text1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/d8_size"
+                                android:text="@string/tab_song"
+                                android:textColor="@color/white" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/main_tabs_album"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:gravity="center_horizontal"
+                            android:orientation="vertical"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/main_tabs_artist"
+                            app:layout_constraintStart_toEndOf="@id/main_tabs_music"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <ImageView
+                                android:layout_width="@dimen/d48_size"
+                                android:src="@drawable/main_tab_album"
+                                android:layout_height="@dimen/d48_size" />
+
+                            <TextView
+                                android:id="@+id/text2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/d8_size"
+                                android:text="@string/tab_album"
+                                android:textColor="@color/white" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/main_tabs_artist"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:gravity="center_horizontal"
+                            android:orientation="vertical"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="@id/main_tabs_playlist"
+                            app:layout_constraintStart_toEndOf="@id/main_tabs_album"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <ImageView
+                                android:layout_width="@dimen/d48_size"
+                                android:src="@drawable/main_tab_artist"
+                                android:layout_height="@dimen/d48_size" />
+
+                            <TextView
+                                android:id="@+id/text3"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/d8_size"
+                                android:text="@string/tab_artist"
+                                android:textColor="@color/white" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/main_tabs_playlist"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:gravity="center_horizontal"
+                            android:orientation="vertical"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/main_tabs_folder"
+                            app:layout_constraintStart_toEndOf="@id/main_tabs_artist"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <ImageView
+                                android:layout_width="@dimen/d48_size"
+                                android:src="@drawable/main_tab_playlist"
+                                android:layout_height="@dimen/d48_size" />
+
+                            <TextView
+                                android:id="@+id/text4"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/d8_size"
+                                android:text="@string/tab_playlist"
+                                android:textColor="@color/white" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/main_tabs_folder"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:gravity="center_horizontal"
+                            android:orientation="vertical"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/main_tabs_playlist"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <ImageView
+                                android:layout_width="@dimen/d48_size"
+                                android:src="@drawable/main_tab_folder"
+                                android:layout_height="@dimen/d48_size" />
+
+                            <TextView
+                                android:id="@+id/text5"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/d8_size"
+                                android:text="@string/tab_folder"
+                                android:textColor="@color/white" />
+
+                        </LinearLayout>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.appbar.AppBarLayout>
+
+            <!--中间四个fragment-->
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/view_pager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingBottom="@dimen/item_height"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+            <!-- 底部自定义ationbar -->
+            <fragment
+                android:id="@+id/bottom_actionbar_new"
+                android:name="com.blueshark.music.ui.fragment.BottomActionBarFragment"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/item_height"
+                android:layout_gravity="bottom"
+                android:tag="BottomActionBarFragment" />
+
+            <ImageView
+                android:id="@+id/btn_add"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|right"
+                android:layout_marginRight="@dimen/d38_size"
+                android:layout_marginBottom="@dimen/d80_size"
+                android:scaleType="center"
+                android:visibility="gone" />
+
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    </LinearLayout>
+
+
+    <!--测滑菜单-->
+    <!--<include layout="@layout/slide_menu"/>-->
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/navigation_view"
+        android:layout_width="@dimen/d264_size"
+        android:layout_height="match_parent"
+        android:layout_gravity="start">
+
+        <LinearLayout
+            android:id="@+id/navigation_header_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <include
+                android:id="@+id/header"
+                layout="@layout/navigation_header" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/d6_size" />
+        </LinearLayout>
+
+    </com.google.android.material.navigation.NavigationView>
+
+</androidx.drawerlayout.widget.DrawerLayout>

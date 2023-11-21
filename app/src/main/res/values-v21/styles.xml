@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <style name="Theme.BSPlayer.Notification.Title" parent="TextAppearance.Compat.Notification.Title" />
+  <style name="Theme.BSPlayer.Notification" parent="TextAppearance.Compat.Notification" />
+
+
+</resources>

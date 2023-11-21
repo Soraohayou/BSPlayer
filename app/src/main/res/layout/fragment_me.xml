@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:scrollbars="vertical">
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/root">
+
+
+  <com.blueshark.music.ui.widget.CircleImageView
+      android:id="@+id/me_headImage"
+      android:layout_width="@dimen/d64_size"
+      android:layout_height="@dimen/d64_size"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      android:layout_marginStart="@dimen/d24_size"
+      android:layout_marginTop="@dimen/d16_size"/>
+
+  <LinearLayout
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      app:layout_constraintStart_toEndOf="@id/me_headImage"
+      app:layout_constraintTop_toTopOf="@id/me_headImage"
+      android:layout_marginStart="@dimen/d12_size"
+      app:layout_constraintBottom_toBottomOf="@id/me_headImage"
+      android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/s24_size"
+        android:text="Winner"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="累计听歌：4189首"
+        android:textColor="?attr/text_color_secondary"/>
+  </LinearLayout>
+
+  <ImageView
+      android:id="@+id/me_setting"
+      android:layout_width="20dp"
+      android:layout_height="20dp"
+      android:src="@drawable/setting"
+      app:layout_constraintEnd_toEndOf="parent"
+      android:layout_marginEnd="@dimen/d22_size"
+      android:layout_marginTop="28dp"
+      app:layout_constraintTop_toTopOf="parent"/>
+
+  <View
+      android:id="@+id/me_dash"
+      android:layout_width="match_parent"
+      android:layout_height="2dp"
+      android:background="@drawable/bg_me_dash"
+      app:layout_constraintTop_toTopOf="parent"
+      android:layout_marginTop="226dp"/>
+
+  <LinearLayout
+      android:id="@+id/layout1"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      app:layout_constraintTop_toBottomOf="@id/me_headImage"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toStartOf="@id/layout2"
+      app:layout_constraintBottom_toTopOf="@id/me_dash">
+
+    <ImageView
+        android:layout_width="46dp"
+        android:layout_height="46dp"
+        android:src="@drawable/me_img1"/>
+
+    <TextView
+        android:layout_gravity="center_horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/d8_size"
+        android:text="曲库"
+        android:textColor="#BBBBBB"/>
+
+  </LinearLayout>
+
+  <LinearLayout
+      android:id="@+id/layout2"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:gravity="center_horizontal"
+      app:layout_constraintTop_toBottomOf="@id/me_headImage"
+      app:layout_constraintStart_toEndOf="@id/layout1"
+      app:layout_constraintEnd_toStartOf="@id/layout3"
+      app:layout_constraintBottom_toTopOf="@id/me_dash">
+
+    <ImageView
+        android:layout_width="46dp"
+        android:layout_height="46dp"
+        android:src="@drawable/me_image2"/>
+
+    <TextView
+        android:layout_gravity="center_horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/d8_size"
+        android:text="扫描歌曲"
+        android:textColor="#BBBBBB"/>
+
+  </LinearLayout>
+
+  <LinearLayout
+      android:id="@+id/layout3"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:gravity="center_horizontal"
+      android:orientation="vertical"
+      app:layout_constraintTop_toBottomOf="@id/me_headImage"
+      app:layout_constraintStart_toEndOf="@id/layout2"
+      app:layout_constraintEnd_toStartOf="@id/layout4"
+      app:layout_constraintBottom_toTopOf="@id/me_dash">
+
+    <ImageView
+        android:layout_width="46dp"
+        android:layout_height="46dp"
+        android:src="@drawable/me_image3"/>
+
+    <TextView
+        android:layout_gravity="center_horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/d8_size"
+        android:text="最近播放"
+        android:textColor="#BBBBBB"/>
+
+  </LinearLayout>
+
+  <LinearLayout
+      android:id="@+id/layout4"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toEndOf="@id/layout3"
+      app:layout_constraintTop_toBottomOf="@id/me_headImage"
+      app:layout_constraintBottom_toTopOf="@id/me_dash">
+
+    <ImageView
+        android:layout_width="46dp"
+        android:layout_height="46dp"
+        android:src="@drawable/me_image4"/>
+
+    <TextView
+        android:layout_gravity="center_horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/d8_size"
+        android:text="退出"
+        android:textColor="#BBBBBB"/>
+
+  </LinearLayout>
+
+  <TextView
+      android:id="@+id/me_title1"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      app:layout_constraintTop_toBottomOf="@id/me_dash"
+      app:layout_constraintStart_toStartOf="parent"
+      android:layout_marginTop="@dimen/d14_size"
+      android:layout_marginStart="@dimen/d24_size"
+      android:text="常规设置"
+      android:textColor="?attr/colorAccent"
+      android:textSize="@dimen/d18_size" />
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_centerVertical="true"
+      android:layout_marginHorizontal="@dimen/d12_size"
+      android:paddingHorizontal="@dimen/d12_size"
+      android:paddingVertical="12dp"
+      android:background="@drawable/bg_setting_item"
+      android:layout_marginTop="@dimen/d12_size"
+      android:gravity="center_vertical"
+      android:orientation="vertical"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/me_title1">
+
+    <TextView
+        android:id="@+id/me_text1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/d2_size"
+        android:text="音频过滤"
+        android:textColor="?attr/text_color_primary"
+        android:textSize="@dimen/s16_size" />
+
+    <TextView
+        android:id="@+id/me_text2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="设置过滤文件大小"
+        android:textColor="?attr/text_color_secondary"
+        android:textSize="@dimen/s14_size" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_marginTop="@dimen/d12_size"
+        android:layout_marginBottom="@dimen/d12_size"
+        android:background="?attr/divider_color" />
+
+    <TextView
+        android:id="@+id/me_text3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/d2_size"
+        android:text="@string/blacklist"
+        android:textColor="?attr/text_color_primary"
+        android:textSize="@dimen/s16_size" />
+
+    <TextView
+        android:id="@+id/me_text4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="这些文件夹中的内容将会从您的媒体库中隐藏"
+        android:textColor="?attr/text_color_secondary"
+        android:textSize="@dimen/s14_size" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_marginTop="@dimen/d12_size"
+        android:layout_marginBottom="@dimen/d12_size"
+        android:background="?attr/divider_color" />
+
+    <TextView
+        android:id="@+id/me_text5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/d2_size"
+        android:text="锁屏设置"
+        android:textColor="?attr/text_color_primary"
+        android:textSize="@dimen/s16_size" />
+
+    <TextView
+        android:id="@+id/me_text6"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="锁屏页会显示当前歌曲的封面，样式取决于BSPlayer"
+        android:textColor="?attr/text_color_secondary"
+        android:textSize="@dimen/s14_size" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_marginTop="@dimen/d12_size"
+        android:layout_marginBottom="@dimen/d12_size"
+        android:background="?attr/divider_color" />
+
+    <TextView
+        android:id="@+id/me_text7"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/d2_size"
+        android:text="歌单导入"
+        android:textColor="?attr/text_color_primary"
+        android:textSize="@dimen/s16_size" />
+
+    <TextView
+        android:id="@+id/me_text8"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="将外部或者其他播放器的歌单导入到现有或新的播放 列表中"
+        android:textColor="?attr/text_color_secondary"
+        android:textSize="@dimen/s14_size" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_marginTop="@dimen/d12_size"
+        android:layout_marginBottom="@dimen/d12_size"
+        android:background="?attr/divider_color" />
+
+    <TextView
+        android:id="@+id/me_text9"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/d2_size"
+        android:text="歌单导出"
+        android:textColor="?attr/text_color_primary"
+        android:textSize="@dimen/s16_size" />
+
+    <TextView
+        android:id="@+id/me_text10"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="将歌单导出至外部存储"
+        android:textColor="?attr/text_color_secondary"
+        android:textSize="@dimen/s14_size" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_marginTop="@dimen/d12_size"
+        android:layout_marginBottom="@dimen/d12_size"
+        android:background="?attr/divider_color" />
+
+    <TextView
+        android:id="@+id/me_text11"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/d2_size"
+        android:text="歌曲恢复"
+        android:textColor="?attr/text_color_primary"
+        android:textSize="@dimen/s16_size" />
+
+    <TextView
+        android:id="@+id/me_text12"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="恢复从曲库移除的歌曲"
+        android:textColor="?attr/text_color_secondary"
+        android:textSize="@dimen/s14_size" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_marginTop="@dimen/d12_size"
+        android:layout_marginBottom="@dimen/d12_size"
+        android:background="?attr/divider_color" />
+
+
+  </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

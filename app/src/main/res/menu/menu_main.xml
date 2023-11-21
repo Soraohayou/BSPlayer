@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_sort_order"
+        android:icon="@drawable/sort"
+        android:iconTint="@color/black"
+        android:title="@string/sort_order"
+        app:showAsAction="ifRoom">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/action_sort_order_title"
+                    android:title="@string/title" />
+                <item
+                    android:id="@+id/action_sort_order_title_desc"
+                    android:title="@string/title_desc" />
+                <item
+                    android:id="@+id/action_sort_order_display_title"
+                    android:title="@string/display_title" />
+                <item
+                    android:id="@+id/action_sort_order_display_title_desc"
+                    android:title="@string/display_title_desc" />
+                <item
+                    android:id="@+id/action_sort_order_album"
+                    android:title="@string/album" />
+                <item
+                    android:id="@+id/action_sort_order_album_desc"
+                    android:title="@string/album_desc" />
+                <item
+                    android:id="@+id/action_sort_order_artist"
+                    android:title="@string/artist" />
+                <item
+                    android:id="@+id/action_sort_order_artist_desc"
+                    android:title="@string/artist_desc" />
+                <item
+                    android:id="@+id/action_sort_order_date"
+                    android:title="@string/date" />
+                <item
+                    android:id="@+id/action_sort_order_date_desc"
+                    android:title="@string/date_desc" />
+                <!--<item android:title="@string/duration" android:id="@+id/action_sort_order_duration"/>-->
+                <!--<item android:title="@string/year" android:id="@+id/action_sort_order_year"/>-->
+            </group>
+        </menu>
+    </item>
+    <item
+        android:id="@+id/action_timer"
+        android:icon="@drawable/ic_timer_white_24dp"
+        android:iconTint="@color/black"
+        android:orderInCategory="80"
+        android:title="@string/timer_close"
+        app:showAsAction="ifRoom" />
+</menu>

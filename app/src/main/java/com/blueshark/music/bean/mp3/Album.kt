@@ -1,0 +1,24 @@
+package com.blueshark.music.bean.mp3
+
+import android.content.ContentUris
+import android.net.Uri
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+/**
+ * Created by Remix on 2017/10/22.
+ */
+
+@Parcelize
+data class Album(val albumID: Long,
+                 val album: String,
+                 val artistID: Long,
+                 val artist: String,
+                 var count: Int = 0) : Parcelable, BSPlayerModel {
+  val artUri: Uri
+    get() = ContentUris.withAppendedId(Uri.parse("content://media/external/audio/albumart/"), albumID)
+
+  override fun getKey(): String {
+    return albumID.toString()
+  }
+}

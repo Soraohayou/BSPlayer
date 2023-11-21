@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/background_library_color">
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/d1_size"
+        android:layout_alignParentTop="true"
+        android:background="?attr/divider_color" />
+
+    <com.blueshark.music.ui.widget.fastcroll_recyclerview.LocationRecyclerView
+        android:id="@+id/location_recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/divider"
+        app:hideScrollbar="true"
+        app:showTrack="true" />
+
+</RelativeLayout>

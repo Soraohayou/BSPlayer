@@ -1,0 +1,26 @@
+package com.blueshark.music.service
+
+import io.reactivex.Completable
+import io.reactivex.schedulers.Schedulers
+import com.blueshark.music.App
+import java.io.File
+import java.io.FileOutputStream
+
+object LogWriter {
+  private val file = File(App.context.externalCacheDir, "playQueue.log")
+
+  fun write(log: String) {
+    Completable
+        .fromAction {
+          if (!file.exists()) {
+            file.createNewFile()
+          }
+
+          val fos = FileOutputStream(file, true)
+          fos.write((log + "\n").toByteArray())
+          fos.flush()
+        }
+        .subscribeOn(Schedulers.io())
+        .subscribe()
+  }
+}

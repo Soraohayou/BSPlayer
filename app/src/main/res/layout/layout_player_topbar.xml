@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/layout_player_topbar_height"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/top_actionbar">
+
+  <ImageButton
+    android:layout_width="@dimen/d40_size"
+    android:layout_height="@dimen/d40_size"
+    android:layout_marginLeft="@dimen/d8_size"
+    android:layout_centerVertical="true"
+    android:background="@color/transparent"
+    android:src="@drawable/icon_player_back"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      android:visibility="gone"
+    android:id="@+id/top_hide"
+    android:layout_alignParentLeft="true"/>
+
+<!--  <ImageButton-->
+<!--    android:layout_width="@dimen/d40_size"-->
+<!--    android:layout_height="@dimen/d40_size"-->
+<!--    android:layout_marginRight="@dimen/d8_size"-->
+<!--    android:layout_centerVertical="true"-->
+<!--    android:background="@color/transparent"-->
+<!--    android:src="@drawable/icon_player_more"-->
+<!--    android:id="@+id/top_more"-->
+<!--    android:layout_alignParentRight="true"/>-->
+
+  <androidx.cardview.widget.CardView
+      android:id="@+id/top_search"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:layout_centerHorizontal="true"
+      app:cardCornerRadius="@dimen/d24_size"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      android:layout_marginTop="@dimen/d12_size"
+      android:layout_marginStart="@dimen/d20_size"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:cardElevation="0dp">
+    <ImageView
+        android:id="@+id/iv_beauty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#343943" />
+  </androidx.cardview.widget.CardView>
+
+  <ImageView
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      app:layout_constraintDimensionRatio="1:1"
+    app:layout_constraintStart_toStartOf="@id/top_search"
+    app:layout_constraintTop_toTopOf="@id/top_search"
+    app:layout_constraintBottom_toBottomOf="@id/top_search"
+    android:layout_marginStart="@dimen/d16_size"
+    android:layout_marginTop="@dimen/d8_size"
+    android:layout_marginBottom="@dimen/d8_size"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

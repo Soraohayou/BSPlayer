@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/md_colorChooserCustomFrame"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/md_title_frame_margin_bottom"
+    android:paddingBottom="@dimen/md_title_frame_margin_bottom">
+
+    <View
+        android:id="@+id/md_colorIndicator"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_marginHorizontal="@dimen/d24_size"
+        tools:background="@color/md_material_blue_600" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/md_title_frame_margin_bottom"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="2dp"
+            android:layout_marginRight="2dp"
+            android:digits="0123456789abcdefABCDEF"
+            android:text="#"
+            android:textColor="?android:textColorPrimary"
+            android:textColorHint="?android:textColorSecondary"
+            android:textSize="@dimen/md_title_textsize"
+            tools:ignore="HardcodedText,TextViewEdits" />
+
+        <EditText
+            android:id="@+id/md_hexInput"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:digits="0123456789abcdefABCDEF"
+            android:hint="FF0099CC"
+            android:textColor="@color/white"
+            android:textSize="@dimen/md_title_textsize"
+            tools:ignore="HardcodedText" />
+
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/md_title_frame_margin_bottom"
+        android:paddingLeft="@dimen/md_dialog_frame_margin"
+        android:paddingRight="@dimen/md_dialog_frame_margin">
+
+        <!-- Alpha -->
+
+        <TextView
+            android:id="@+id/md_colorALabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/md_colorA"
+            app:layout_constraintBottom_toBottomOf="@id/md_colorA"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginEnd="4dp"
+            android:layout_marginRight="4dp"
+            android:text="A"
+            android:textColor="?android:textColorPrimary"
+            android:textSize="@dimen/md_content_textsize"
+            tools:ignore="HardcodedText" />
+
+        <SeekBar
+            android:id="@+id/md_colorA"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/md_title_frame_margin_bottom"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@id/md_colorALabel"
+            app:layout_constraintEnd_toStartOf="@id/md_colorAValue"
+            android:thumb="@drawable/thumb_choosecolor_seekbar"
+            android:max="255" />
+
+        <TextView
+            android:id="@+id/md_colorAValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/md_colorA"
+            app:layout_constraintBottom_toBottomOf="@id/md_colorA"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="4dp"
+            android:layout_marginLeft="4dp"
+            android:gravity="center"
+            android:minWidth="24dp"
+            android:text="0"
+            android:textColor="?android:textColorPrimary"
+            android:textSize="@dimen/md_content_textsize"
+            tools:ignore="HardcodedText" />
+
+        <!-- Red -->
+
+        <TextView
+            android:id="@+id/md_colorRLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/md_colorR"
+            app:layout_constraintBottom_toBottomOf="@id/md_colorR"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginEnd="4dp"
+            android:text="R"
+            android:textColor="?android:textColorPrimary"
+            android:textSize="@dimen/md_content_textsize"
+            tools:ignore="HardcodedText" />
+
+        <SeekBar
+            android:id="@+id/md_colorR"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/md_title_frame_margin_bottom"
+            app:layout_constraintTop_toBottomOf="@id/md_colorA"
+            app:layout_constraintStart_toEndOf="@id/md_colorRLabel"
+            app:layout_constraintEnd_toStartOf="@id/md_colorRValue"
+            android:thumb="@drawable/thumb_choosecolor_seekbar"
+            android:max="255"/>
+
+        <TextView
+            android:id="@+id/md_colorRValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/md_colorR"
+            app:layout_constraintBottom_toBottomOf="@id/md_colorR"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginStart="4dp"
+            android:layout_marginLeft="4dp"
+            android:gravity="center"
+            android:minWidth="24dp"
+            android:text="0"
+            android:textColor="?android:textColorPrimary"
+            android:textSize="@dimen/md_content_textsize"
+            tools:ignore="HardcodedText" />
+
+        <!-- Green -->
+
+        <TextView
+            android:id="@+id/md_colorGLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/md_colorG"
+            app:layout_constraintBottom_toBottomOf="@id/md_colorG"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginEnd="4dp"
+            android:layout_marginRight="4dp"
+            android:text="G"
+            android:textColor="?android:textColorPrimary"
+            android:textSize="@dimen/md_content_textsize"
+            tools:ignore="HardcodedText" />
+
+        <SeekBar
+            android:id="@+id/md_colorG"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/md_title_frame_margin_bottom"
+            app:layout_constraintTop_toBottomOf="@id/md_colorR"
+            app:layout_constraintStart_toEndOf="@id/md_colorGLabel"
+            app:layout_constraintEnd_toStartOf="@id/md_colorGValue"
+            android:thumb="@drawable/thumb_choosecolor_seekbar"
+            android:max="255" />
+
+        <TextView
+            android:id="@+id/md_colorGValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/md_colorG"
+            app:layout_constraintBottom_toBottomOf="@id/md_colorG"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginStart="4dp"
+            android:layout_marginLeft="4dp"
+            android:gravity="center"
+            android:minWidth="24dp"
+            android:text="0"
+            android:textColor="?android:textColorPrimary"
+            android:textSize="@dimen/md_content_textsize"
+            tools:ignore="HardcodedText" />
+
+        <!-- Blue -->
+
+        <TextView
+            android:id="@+id/md_colorBLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/md_colorB"
+            app:layout_constraintBottom_toBottomOf="@id/md_colorB"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginEnd="4dp"
+            android:layout_marginRight="4dp"
+            android:text="B"
+            android:textColor="?android:textColorPrimary"
+            android:textSize="@dimen/md_content_textsize"
+            tools:ignore="HardcodedText" />
+
+        <SeekBar
+            android:id="@+id/md_colorB"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/md_title_frame_margin_bottom"
+            app:layout_constraintTop_toBottomOf="@id/md_colorG"
+            app:layout_constraintStart_toEndOf="@id/md_colorBLabel"
+            app:layout_constraintEnd_toStartOf="@id/md_colorBValue"
+            android:thumb="@drawable/thumb_choosecolor_seekbar"
+            android:max="255" />
+
+        <TextView
+            android:id="@+id/md_colorBValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/md_colorB"
+            app:layout_constraintBottom_toBottomOf="@id/md_colorB"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginStart="4dp"
+            android:layout_marginLeft="4dp"
+            android:gravity="center"
+            android:minWidth="24dp"
+            android:text="0"
+            android:textColor="?android:textColorPrimary"
+            android:textSize="@dimen/md_content_textsize"
+            tools:ignore="HardcodedText" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>
