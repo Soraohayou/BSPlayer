@@ -55,7 +55,7 @@ class ArtistAdapter(layoutId: Int, multiChoice: MultipleChoice<Artist>, recycler
     }
     val context = holder.itemView.context
     //设置歌手名
-    holder.tv1.text = artist.artist
+    holder.tv1.text = if(artist.artist == "<unknown>")"未知歌手" else artist.artist
     if (holder is ArtistListHolder) {
       if (artist.count > 0) {
         holder.tv2.text = context.getString(R.string.song_count_1, artist.count)

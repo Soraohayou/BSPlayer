@@ -150,6 +150,7 @@
         </RelativeLayout>
 
         <!-- 三个播放控制按钮和两个控制播放模式 -->
+
         <include
             android:id="@+id/layout_player_control"
             layout="@layout/layout_player_control" />

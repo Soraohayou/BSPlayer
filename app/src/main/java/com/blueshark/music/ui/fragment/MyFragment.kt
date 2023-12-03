@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.webkit.MimeTypeMap
 import android.widget.CompoundButton
 import com.afollestad.materialdialogs.DialogAction
+import com.afollestad.materialdialogs.GravityEnum
 import com.blueshark.music.R
 import com.blueshark.music.db.room.DatabaseRepository
 import com.blueshark.music.helper.M3UHelper
@@ -21,9 +22,9 @@ import com.blueshark.music.misc.receiver.ExitReceiver
 import com.blueshark.music.theme.Theme
 import com.blueshark.music.theme.ThemeStore
 import com.blueshark.music.ui.activity.HistoryActivity
-import com.blueshark.music.ui.activity.LancherMain
 import com.blueshark.music.ui.activity.SearchActivity
 import com.blueshark.music.ui.activity.SettingActivity
+import com.blueshark.music.ui.activity.base.BaseActivity
 import com.blueshark.music.ui.fragment.base.BaseMusicFragment
 import com.blueshark.music.ui.misc.FolderChooser
 import com.blueshark.music.util.*
@@ -121,14 +122,23 @@ class MyFragment : BaseMusicFragment(), SharedPreferences.OnSharedPreferenceChan
      * 设置黑名单
      */
     private fun configBlackList() {
-        val blackList: Set<String> = SPUtil.getStringSet(activity, SPUtil.SETTING_KEY.NAME, SPUtil.SETTING_KEY.BLACKLIST)
+        val blackList: Set<String> =
+            SPUtil.getStringSet(activity, SPUtil.SETTING_KEY.NAME, SPUtil.SETTING_KEY.BLACKLIST)
         val items = ArrayList<String>(blackList)
         items.sortWith(Comparator { left, right ->
-            File(left).name.compareTo(File(right).name)
+            File(left).name.compareTo(
+                File(
+                    right
+                ).name
+            )
         })
 
-        Theme.getBaseDialog(activity).items(items).itemsCallback { dialog, itemView, position, text ->
-            Theme.getBaseDialog(activity).title(R.string.remove_from_blacklist).content(getString(R.string.do_you_want_remove_from_blacklist, text)).onPositive { dialog, which ->
+        Theme.getCustomDialog(activity).items(items).contentColor(Color.WHITE).titleGravity(GravityEnum.CENTER).itemsCallback { dialog, itemView, position, text ->
+            Theme.getBaseDialog(activity).title(R.string.remove_from_blacklist).content(
+                getString(
+                    R.string.do_you_want_remove_from_blacklist, text
+                )
+            ).onPositive { dialog, which ->
                 val mutableSet = LinkedHashSet<String>(blackList)
                 val it = mutableSet.iterator()
                 while (it.hasNext()) {
@@ -137,37 +147,69 @@ class MyFragment : BaseMusicFragment(), SharedPreferences.OnSharedPreferenceChan
                         break
                     }
                 }
-                SPUtil.putStringSet(activity, SPUtil.SETTING_KEY.NAME, SPUtil.SETTING_KEY.BLACKLIST, mutableSet)
-                activity?.contentResolver?.notifyChange(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null)
+                SPUtil.putStringSet(
+                    activity, SPUtil.SETTING_KEY.NAME, SPUtil.SETTING_KEY.BLACKLIST, mutableSet
+                )
+                activity?.contentResolver?.notifyChange(
+                    MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null
+                )
             }.positiveText(R.string.confirm).negativeText(R.string.cancel).show()
-        }.title(R.string.blacklist).neutralText(R.string.clear).positiveText(R.string.add).onAny { dialog, which ->
-            when (which) {
-                DialogAction.NEUTRAL -> {
-                    //clear
-                    Theme.getBaseDialog(activity).title(R.string.clear_blacklist_title).content(R.string.clear_blacklist_content).contentColor(Color.WHITE).negativeText(R.string.cancel).positiveText(R.string.confirm).onPositive { dialog, which ->
-                        SPUtil.putStringSet(activity, SPUtil.SETTING_KEY.NAME, SPUtil.SETTING_KEY.BLACKLIST, LinkedHashSet<String>())
-                        activity?.contentResolver?.notifyChange(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null)
-                    }.show()
-                }
+        }.title(R.string.blacklist)
+            //.neutralText(R.string.clear)
+            .negativeText(R.string.close).positiveText(R.string.add).onAny { dialog, which ->
+                when (which) {
+                    DialogAction.NEUTRAL -> {
+                        //clear
+                        Theme.getBaseDialog(activity).title(R.string.clear_blacklist_title)
+                            .content(R.string.clear_blacklist_content).contentColor(Color.WHITE)
+                            .negativeText(R.string.cancel).positiveText(R.string.confirm)
+                            .onPositive { dialog, which ->
+                                SPUtil.putStringSet(
+                                    activity,
+                                    SPUtil.SETTING_KEY.NAME,
+                                    SPUtil.SETTING_KEY.BLACKLIST,
+                                    LinkedHashSet<String>()
+                                )
+                                activity?.contentResolver?.notifyChange(
+                                    MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null
+                                )
+                            }.show()
+                    }
 
-                DialogAction.POSITIVE -> {
-                    //add
-                    FolderChooser(activity as LancherMain, MyFragment.TAG_BLACKLIST, null, null, null, object : FolderChooser.FolderCallback {
-                        override fun onFolderSelection(chooser: FolderChooser, folder: File) {
-                            if (folder.isDirectory) {
-                                val newBlacklist = LinkedHashSet<String>(blackList)
-                                newBlacklist.add(folder.absolutePath)
-                                SPUtil.putStringSet(activity, SPUtil.SETTING_KEY.NAME, SPUtil.SETTING_KEY.BLACKLIST, newBlacklist)
-                                activity?.contentResolver?.notifyChange(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null)
-                            }
-                            configBlackList()
-                        }
-                    }).show()
-                }
+                    DialogAction.NEGATIVE -> {
+                        dialog.hide();
+                    }
 
-                else -> {}
-            }
-        }.show()
+                    DialogAction.POSITIVE -> {
+                        //add
+                        FolderChooser(activity as BaseActivity,
+                            TAG_BLACKLIST,
+                            null,
+                            null,
+                            null,
+                            object : FolderChooser.FolderCallback {
+                                override fun onFolderSelection(
+                                    chooser: FolderChooser, folder: File
+                                ) {
+                                    if (folder.isDirectory) {
+                                        val newBlacklist = LinkedHashSet<String>(blackList)
+                                        newBlacklist.add(folder.absolutePath)
+                                        SPUtil.putStringSet(
+                                            activity,
+                                            SPUtil.SETTING_KEY.NAME,
+                                            SPUtil.SETTING_KEY.BLACKLIST,
+                                            newBlacklist
+                                        )
+                                        activity?.contentResolver?.notifyChange(
+                                            MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null
+                                        )
+                                    }
+                                    configBlackList()
+                                }
+                            }).show()
+                    }
+                }
+            }.show()
     }
 
     /**

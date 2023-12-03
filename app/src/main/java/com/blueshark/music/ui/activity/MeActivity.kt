@@ -6,34 +6,25 @@ import android.content.ComponentName
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
-import android.provider.Settings
-import android.util.Log
 import android.webkit.MimeTypeMap
 import android.widget.CompoundButton
 import com.afollestad.materialdialogs.DialogAction
 import com.blueshark.music.App.Companion.context
 import com.blueshark.music.R
-import com.blueshark.music.bean.mp3.Song
 import com.blueshark.music.databinding.ActivityMeBinding
 import com.blueshark.music.db.room.DatabaseRepository
 import com.blueshark.music.helper.M3UHelper
-import com.blueshark.music.helper.ShakeDetector
 import com.blueshark.music.misc.MediaScanner
 import com.blueshark.music.misc.handler.MsgHandler
 import com.blueshark.music.misc.receiver.ExitReceiver
-import com.blueshark.music.service.Command
-import com.blueshark.music.service.MusicService
 import com.blueshark.music.theme.Theme
 import com.blueshark.music.theme.ThemeStore
 import com.blueshark.music.ui.activity.launchmain.Companion.EXTRA_RECREATE
 import com.blueshark.music.ui.activity.launchmain.Companion.EXTRA_REFRESH_ADAPTER
 import com.blueshark.music.ui.activity.launchmain.Companion.EXTRA_REFRESH_LIBRARY
 import com.blueshark.music.ui.activity.base.BaseActivity
-import com.blueshark.music.ui.activity.base.BaseMusicActivity
 import com.blueshark.music.ui.misc.FolderChooser
 import com.blueshark.music.util.*
 import io.reactivex.Single
@@ -154,12 +145,19 @@ class MeActivity : BaseActivity(), SharedPreferences.OnSharedPreferenceChangeLis
                 break
             }
         }
-        Theme.getBaseDialog(this).title(R.string.set_filter_size).items("0K", "500K", "1MB", "2MB", "5MB").itemsCallbackSingleChoice(position) { dialog, itemView, which, text ->
-            SPUtil.putValue(this, SPUtil.SETTING_KEY.NAME, SPUtil.SETTING_KEY.SCAN_SIZE, scanSize[which])
-            MediaStoreUtil.SCAN_SIZE = scanSize[which]
+
+        val index = intArrayOf(position);
+
+        Theme.getBaseDialog(this).title(R.string.set_filter_size).items("0K", "500K", "1MB", "2MB", "5MB")
+            .itemsCallbackMultiChoice(index.toTypedArray()) {  dialog1, which, allSelects ->
+                val which1 = which.filter { item ->
+                    item != index[0]
+                }
+            SPUtil.putValue(this, SPUtil.SETTING_KEY.NAME, SPUtil.SETTING_KEY.SCAN_SIZE, scanSize[which1[0]])
+            MediaStoreUtil.SCAN_SIZE = scanSize[which1[0]]
             contentResolver.notifyChange(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null)
             true
-        }.show()
+        }.alwaysCallMultiChoiceCallback().show()
     }
 
     /**

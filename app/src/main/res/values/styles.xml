@@ -103,5 +103,9 @@
     <!-- 指定消失的动画xml -->
   </style>
 
+  <style name="BlackBackgroundCheckBoxTheme">
+    <item name="colorAccent">@color/white</item><!--选中颜色-->
+    <item name="colorControlNormal">@color/white</item><!--未选中颜色-->
+  </style>
 
 </resources>

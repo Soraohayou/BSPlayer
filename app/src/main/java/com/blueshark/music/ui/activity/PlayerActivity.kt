@@ -353,10 +353,10 @@ class PlayerActivity : BaseMusicActivity() {
                 @SuppressLint("RestrictedApi") val popupMenu = PopupMenu(this, v, Gravity.TOP)
                 popupMenu.menuInflater.inflate(R.menu.menu_audio_item, popupMenu.menu)
                 popupMenu.setOnMenuItemClickListener(AudioPopupListener(this, song))
-
 //        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
 //          popupMenu.menu.removeItem(R.id.menu_speed)
 //        }
+                Log.i(TAG, ": 1111111111")
                 popupMenu.show()
             }
 

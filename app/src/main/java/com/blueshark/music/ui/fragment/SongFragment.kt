@@ -2,7 +2,10 @@ package com.blueshark.music.ui.fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import androidx.loader.content.Loader
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -100,6 +103,13 @@ class SongFragment : LibraryFragment<Song, SongAdapter>() {
 
   override fun onMetaChanged() {
     super.onMetaChanged()
+    if(adapter.dataList.size>0){
+      location_recyclerView.visibility = VISIBLE
+      no_song.visibility = GONE
+    }else{
+      location_recyclerView.visibility = GONE
+      no_song.visibility = VISIBLE
+    }
     adapter.updatePlayingSong()
   }
 
@@ -109,7 +119,7 @@ class SongFragment : LibraryFragment<Song, SongAdapter>() {
 
   private class AsyncSongLoader(context: Context?) : WrappedAsyncTaskLoader<List<Song>>(context) {
     override fun loadInBackground(): List<Song> {
-      return getAllSong()
+      return getAllSong();
     }
   }
 

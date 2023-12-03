@@ -179,6 +179,8 @@ dependencies {
 
 
     implementation 'tv.danmaku.ijk.media:ijkplayer-java:0.8.8'
+
+    implementation 'com.makeramen:roundedimageview:2.3.0'
 }
 
 def getProperties(String fileName) {

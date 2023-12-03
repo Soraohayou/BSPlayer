@@ -17,7 +17,7 @@
                 android:id="@+id/toolbar_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="start"
+                android:layout_gravity="center"
                 android:textColor="#ffffff"
                 android:textSize="@dimen/s22_size" />
 

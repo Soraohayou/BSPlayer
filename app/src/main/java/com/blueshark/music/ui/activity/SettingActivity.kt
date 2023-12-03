@@ -19,7 +19,7 @@ import android.webkit.MimeTypeMap
 import android.widget.CompoundButton
 import android.widget.CompoundButton.OnCheckedChangeListener
 import com.afollestad.materialdialogs.DialogAction
-import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.GravityEnum
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.soundcloud.android.crop.Crop
@@ -36,15 +36,12 @@ import com.blueshark.music.databinding.ActivitySettingBinding
 import com.blueshark.music.db.room.DatabaseRepository
 import com.blueshark.music.glide.GlideApp
 import com.blueshark.music.glide.UriFetcher
-import com.blueshark.music.glide.UriFetcher.DOWNLOAD_NETEASE
-import com.blueshark.music.helper.EQHelper
 import com.blueshark.music.helper.LanguageHelper
 import com.blueshark.music.helper.LanguageHelper.AUTO
 import com.blueshark.music.helper.M3UHelper.exportPlayListToFile
 import com.blueshark.music.helper.M3UHelper.importLocalPlayList
 import com.blueshark.music.helper.M3UHelper.importM3UFile
 import com.blueshark.music.helper.ShakeDetector
-import com.blueshark.music.misc.MediaScanner
 import com.blueshark.music.misc.cache.DiskCache
 import com.blueshark.music.misc.handler.MsgHandler
 import com.blueshark.music.misc.handler.OnHandleMessage
@@ -75,10 +72,7 @@ import com.blueshark.music.util.SPUtil.SETTING_KEY
 import com.blueshark.music.util.SPUtil.SETTING_KEY.BOTTOM_OF_NOW_PLAYING_SCREEN
 import com.blueshark.music.util.Util.isSupportStatusBarLyric
 import com.blueshark.music.util.Util.sendLocalBroadcast
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.io.File
-import java.util.Arrays
-import java.util.stream.Collectors
 
 /**
  * @ClassName SettingActivity
@@ -673,11 +667,15 @@ class SettingActivity : ToolbarActivity(), ColorChooserDialog.ColorCallback,
             ThemeStore.FOLLOW_SYSTEM -> 2
             else -> 2
         }
-        getBaseDialog(this).items(R.array.dark_theme)
-            .itemsCallbackSingleChoice(currentSetting) { dialog, itemView, which, text ->
-                if (which != currentSetting) {
+        val index = intArrayOf(currentSetting);
+        getBaseDialog(this).title("选择色彩方式").items(R.array.dark_theme)
+            .itemsCallbackMultiChoice(index.toTypedArray()) {  dialog1, which, allSelects ->
+                val which1 = which.filter { item ->
+                    item != index[0]
+                }
+                if (which1.isNotEmpty()) {
                     SPUtil.putValue(
-                        this, SETTING_KEY.NAME, SETTING_KEY.DARK_THEME, when (which) {
+                        this, SETTING_KEY.NAME, SETTING_KEY.DARK_THEME, when (which1[0]) {
                             0 -> ThemeStore.ALWAYS_OFF
                             1 -> ThemeStore.ALWAYS_ON
                             2 -> ThemeStore.FOLLOW_SYSTEM
@@ -688,7 +686,7 @@ class SettingActivity : ToolbarActivity(), ColorChooserDialog.ColorCallback,
                     recreate()
                 }
                 true
-            }.show()
+            }.alwaysCallMultiChoiceCallback().show()
     }
 
     /**
@@ -901,7 +899,8 @@ class SettingActivity : ToolbarActivity(), ColorChooserDialog.ColorCallback,
      * 清除缓存
      */
     private fun clearCache() {
-        getBaseDialog(this).content(R.string.confirm_clear_cache).contentColor(Color.WHITE)
+        getBaseDialog(this).content(R.string.confirm_clear_cache).contentColor(Color.WHITE).title("清除缓存")
+            .titleGravity(GravityEnum.CENTER)
             .positiveText(R.string.confirm).negativeText(R.string.cancel)
             .onPositive { dialog, which ->
                 GlideApp.get(this@SettingActivity).clearMemory()
@@ -917,7 +916,7 @@ class SettingActivity : ToolbarActivity(), ColorChooserDialog.ColorCallback,
                     needRefreshAdapter = true
                     handler.sendEmptyMessage(CLEAR_FINISH)
                 }.subscribeOn(Schedulers.io()).subscribe()
-            }.show()
+            }.content("是否确实清除缓存？？？").show()
     }
 
     /**
@@ -1069,7 +1068,7 @@ class SettingActivity : ToolbarActivity(), ColorChooserDialog.ColorCallback,
             )
         })
 
-        getCustomDialog(this).items(items).itemsCallback { dialog, itemView, position, text ->
+        getCustomDialog(this).items(items).contentColor(Color.WHITE).itemsCallback { dialog, itemView, position, text ->
             getBaseDialog(this).title(R.string.remove_from_blacklist).content(
                 getString(
                     R.string.do_you_want_remove_from_blacklist, text

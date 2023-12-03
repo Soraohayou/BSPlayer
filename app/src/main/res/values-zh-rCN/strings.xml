@@ -80,7 +80,7 @@
   <string name="confirm_clear_cache">确认清除缓存？</string>
   <string name="mylove_cant_edit">我的收藏列表不可编辑</string>
   <string name="error">错误</string>
-  <string name="qq">QQ</string>
+  <string name="qq">QQ音乐</string>
   <string name="record_share">以海报分享</string>
   <string name="share">分享</string>
   <string name="timer">伴着音乐入睡</string>
@@ -322,7 +322,7 @@
   <string name="bass_boost">低音增强</string>
   <string name="virtualizer">环绕声</string>
 
-  <string name="auto_play">自动播放</string>
+  <string name="auto_play">选择自动播放</string>
   <string name="auto_play_tip">配置是否自动播放</string>
   <string name="auto_play_headset_plug">耳机插入时自动播放</string>
   <string name="auto_play_open_software">打开软件时自动播放</string>
@@ -337,7 +337,7 @@
   <string name="remove_from_blacklist">从黑名单移除</string>
   <string name="do_you_want_remove_from_blacklist">你想从黑名单移除%s吗？</string>
   <string name="blacklist_tip">这些文件夹中的内容将会从您的媒体库中隐藏</string>
-  <string name="now_playing_screen_background">播放界面背景</string>
+  <string name="now_playing_screen_background">现在播放界面背景</string>
   <string name="now_playing_screen_theme">跟随主题</string>
   <string name="now_playing_screen_cover">跟随专辑封面</string>
   <string name="now_playing_screen_custom">自定义</string>

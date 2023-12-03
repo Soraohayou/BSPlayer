@@ -6,21 +6,21 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingTop="@dimen/md_title_frame_margin_bottom"
-    android:paddingBottom="@dimen/md_title_frame_margin_bottom">
+    android:paddingTop="6dp"
+    android:paddingBottom="6dp">
 
     <View
         android:id="@+id/md_colorIndicator"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:layout_marginHorizontal="@dimen/d24_size"
+        android:layout_height="80dp"
+        android:layout_marginHorizontal="@dimen/d60_size"
         tools:background="@color/md_material_blue_600" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/md_title_frame_margin_bottom"
+        android:layout_marginTop="6dp"
         android:gravity="center">
 
         <TextView
@@ -50,7 +50,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/md_title_frame_margin_bottom"
+        android:layout_marginTop="6dp"
+        android:layout_marginHorizontal="@dimen/d36_size"
         android:paddingLeft="@dimen/md_dialog_frame_margin"
         android:paddingRight="@dimen/md_dialog_frame_margin">
 
@@ -74,7 +75,7 @@
             android:id="@+id/md_colorA"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/md_title_frame_margin_bottom"
+            android:layout_marginTop="6dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toEndOf="@id/md_colorALabel"
             app:layout_constraintEnd_toStartOf="@id/md_colorAValue"
@@ -116,7 +117,7 @@
             android:id="@+id/md_colorR"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/md_title_frame_margin_bottom"
+            android:layout_marginTop="6dp"
             app:layout_constraintTop_toBottomOf="@id/md_colorA"
             app:layout_constraintStart_toEndOf="@id/md_colorRLabel"
             app:layout_constraintEnd_toStartOf="@id/md_colorRValue"
@@ -161,7 +162,7 @@
             android:id="@+id/md_colorG"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/md_title_frame_margin_bottom"
+            android:layout_marginTop="6dp"
             app:layout_constraintTop_toBottomOf="@id/md_colorR"
             app:layout_constraintStart_toEndOf="@id/md_colorGLabel"
             app:layout_constraintEnd_toStartOf="@id/md_colorGValue"
@@ -206,7 +207,7 @@
             android:id="@+id/md_colorB"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/md_title_frame_margin_bottom"
+            android:layout_marginTop="6dp"
             app:layout_constraintTop_toBottomOf="@id/md_colorG"
             app:layout_constraintStart_toEndOf="@id/md_colorBLabel"
             app:layout_constraintEnd_toStartOf="@id/md_colorBValue"

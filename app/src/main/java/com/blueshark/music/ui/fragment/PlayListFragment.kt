@@ -2,6 +2,7 @@ package com.blueshark.music.ui.fragment
 
 import android.content.Context
 import android.text.TextUtils
+import android.util.Log
 import android.view.View
 import androidx.loader.content.Loader
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -63,6 +64,7 @@ class PlayListFragment : LibraryFragment<PlayList, PlayListAdapter>() {
     recyclerView.layoutManager = if (model == HeaderAdapter.LIST_MODE) LinearLayoutManager(requireContext()) else GridLayoutManager(activity, spanCount)
     recyclerView.adapter = adapter
     recyclerView.setHasFixedSize(true)
+    
   }
 
   override fun onPlayListChanged(name: String) {

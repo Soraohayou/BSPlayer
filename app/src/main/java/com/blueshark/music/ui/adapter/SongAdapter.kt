@@ -81,11 +81,11 @@ class SongAdapter(layoutId: Int, multiChoice: MultipleChoice<Song>, recyclerView
             } else {
                 headerHolder.binding.root.visibility = View.VISIBLE
             }
-            if (ColorUtil.isColorCloseToWhite(textColorPrimary)) {
+            /*if (ColorUtil.isColorCloseToWhite(textColorPrimary)) {
                 headerHolder.binding.playShuffleButton.setImageDrawable(Theme.tintVectorDrawable(context, R.drawable.play, textColorPrimary))
             } else {
                 headerHolder.binding.playShuffleButton.setImageDrawable(Theme.tintVectorDrawable(context, R.drawable.play, textColorPrimary))
-            }
+            }*/
             headerHolder.binding.tvShuffleCount.setTextColor(textColorPrimary)
             headerHolder.binding.tvShuffleCount.text = context.getString(R.string.play_random, itemCount - 1)
             headerHolder.binding.root.setOnClickListener { v: View? ->

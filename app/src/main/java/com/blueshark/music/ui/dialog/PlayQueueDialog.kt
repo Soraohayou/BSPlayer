@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import android.util.DisplayMetrics
 import android.view.Gravity
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import com.blueshark.music.R
 import com.blueshark.music.bean.mp3.Song
 import com.blueshark.music.databinding.DialogPlayqueueBinding
@@ -22,7 +24,10 @@ import com.blueshark.music.service.Command
 import com.blueshark.music.service.MusicService.Companion.EXTRA_POSITION
 import com.blueshark.music.theme.Theme
 import com.blueshark.music.ui.adapter.PlayQueueAdapter
+import com.blueshark.music.ui.adapter.SongAdapter
 import com.blueshark.music.ui.dialog.base.BaseMusicDialog
+import com.blueshark.music.ui.misc.MultipleChoice
+import com.blueshark.music.util.Constants
 import com.blueshark.music.util.DensityUtil
 import com.blueshark.music.util.MusicUtil.makeCmdIntent
 import com.blueshark.music.util.Util.sendLocalBroadcast
@@ -37,18 +42,20 @@ import timber.log.Timber
  */
 
 class PlayQueueDialog : BaseMusicDialog(), LoaderManager.LoaderCallbacks<List<Song>> {
+
   private var _binding: DialogPlayqueueBinding? = null
   private val binding get() = _binding!!
 
-  val adapter: PlayQueueAdapter by lazy {
-    PlayQueueAdapter(R.layout.item_playqueue)
-  }
+  lateinit var adapter : SongAdapter
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+
     val dialog = Theme.getBaseDialog(activity)
         .customView(R.layout.dialog_playqueue, false)
         .build()
     _binding = DialogPlayqueueBinding.bind(dialog.customView!!)
+
+    adapter = SongAdapter(R.layout.item_song_recycle, MultipleChoice(requireActivity(), Constants.SONG), binding.playqueueRecyclerview)
 
     binding.playqueueRecyclerview.adapter = adapter
     binding.playqueueRecyclerview.layoutManager = LinearLayoutManager(context)
@@ -60,7 +67,9 @@ class PlayQueueDialog : BaseMusicDialog(), LoaderManager.LoaderCallbacks<List<So
             .putExtra(EXTRA_POSITION, position))
       }
 
-      override fun onItemLongClick(view: View, position: Int) {}
+      override fun onItemLongClick(view: View, position: Int) {
+
+      }
     }
 
     //改变播放列表高度，并置于底部
@@ -77,6 +86,8 @@ class PlayQueueDialog : BaseMusicDialog(), LoaderManager.LoaderCallbacks<List<So
 
     //初始化LoaderManager
     loaderManager.initLoader(LOADER_ID++, null, this)
+
+    binding.tvTitle.visibility = GONE
 
     onViewCreated(dialog.customView!!, savedInstanceState)
     return dialog
@@ -97,7 +108,7 @@ class PlayQueueDialog : BaseMusicDialog(), LoaderManager.LoaderCallbacks<List<So
     if (currentId < 0) {
       return
     }
-    binding.playqueueRecyclerview.smoothScrollToCurrentSong(data)
+    //binding.playqueueRecyclerview.smoothScrollToCurrentSong(data)
   }
 
   override fun onLoaderReset(loader: Loader<List<Song>>) {

@@ -12,4 +12,5 @@
     android:id="@+id/recyclerView"
     app:hideScrollbar="true"
     app:showTrack="true"/>
+
 </RelativeLayout>

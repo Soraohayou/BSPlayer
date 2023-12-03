@@ -10,6 +10,7 @@ import android.content.Context.AUDIO_SERVICE
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.*
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.InsetDrawable
 import android.graphics.drawable.LayerDrawable
@@ -24,8 +25,11 @@ import android.webkit.MimeTypeMap
 import android.widget.CompoundButton
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.PopupWindow
 import android.widget.SeekBar
+import android.widget.TextView
 import androidx.appcompat.widget.PopupMenu
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
 import androidx.palette.graphics.Palette
 import androidx.palette.graphics.Palette.Swatch
@@ -88,12 +92,14 @@ import kotlinx.android.synthetic.main.activity_player.*
 import kotlinx.android.synthetic.main.activity_player.player_container
 import kotlinx.android.synthetic.main.activity_player.top_detail
 import kotlinx.android.synthetic.main.activity_player.top_title
+import kotlinx.android.synthetic.main.activity_type.content
 import kotlinx.android.synthetic.main.layout_player_control.*
 import kotlinx.android.synthetic.main.layout_player_control.playbar_play_pause
 import kotlinx.android.synthetic.main.layout_player_menu.*
 import kotlinx.android.synthetic.main.layout_player_menu.favorite
 import kotlinx.android.synthetic.main.layout_player_topbar.*
 import kotlinx.android.synthetic.main.layout_player_volume.*
+import org.jetbrains.anko.forEachChild
 import timber.log.Timber
 import tv.danmaku.ijk.media.player.IjkMediaMeta
 
@@ -185,18 +191,19 @@ class PlayerFragment : BaseMusicFragment() {
         //SPUtil.getValue(context, SETTING_KEY.NAME, SETTING_KEY.PLAYER_BACKGROUND, BACKGROUND_ADAPTIVE_COLOR)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View? {
         binding = ActivityPlayerBinding.inflate(inflater)
         return binding.root
-      //  return inflater.inflate(R.layout.activity_player, container, false)
+        //  return inflater.inflate(R.layout.activity_player, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         song = getCurrentSong()
-        if (song == Song.EMPTY_SONG && arguments?.getParcelable<Song>(EXTRA_SONG) !=null) {
+        if (song == Song.EMPTY_SONG && arguments?.getParcelable<Song>(EXTRA_SONG) != null) {
             song = arguments?.getParcelable<Song>(EXTRA_SONG)!!
         }
     }
@@ -209,7 +216,7 @@ class PlayerFragment : BaseMusicFragment() {
         }
     }
 
-    private fun  initView(){
+    private fun initView() {
         setUpBottom()
         setUpFragments()
         setUpTop()
@@ -219,15 +226,31 @@ class PlayerFragment : BaseMusicFragment() {
         setUpSearch()
         Util.registerLocalReceiver(receiver, IntentFilter(ACTION_UPDATE_NEXT))
 
-        arrayOf(binding.layoutPlayerControl.playbarNext, binding.layoutPlayerControl.playbarPrev, binding.layoutPlayerControl.playbarPlayContainer).forEach {
+        arrayOf(
+            binding.layoutPlayerControl.playbarNext,
+            binding.layoutPlayerControl.playbarPrev,
+            binding.layoutPlayerControl.playbarPlayContainer
+        ).forEach {
             it.setOnClickListener(onCtrlClick)
         }
         binding.topActionbar?.let {
-            arrayOf(binding.layoutPlayerMenus.playbarModel, binding.layoutPlayerMenus.playbarPlayinglist, it.topHide, binding.layoutPlayerMenus.topMore, binding.layoutPlayerMenus.equalizer, binding.layoutPlayerMenus.speed, binding.layoutPlayerMenus.favorite).forEach {
+            arrayOf(
+                binding.layoutPlayerMenus.playbarModel,
+                binding.layoutPlayerMenus.playbarPlayinglist,
+                it.topHide,
+                binding.layoutPlayerMenus.topMore,
+                binding.layoutPlayerMenus.equalizer,
+                binding.layoutPlayerMenus.speed,
+                binding.layoutPlayerMenus.favorite
+            ).forEach {
                 it.setOnClickListener(onOtherClick)
             }
         }
-        arrayOf(binding.layoutPlayerVolume.volumeDown, binding.layoutPlayerVolume.volumeUp, binding.layoutPlayerVolume.nextSong).forEach {
+        arrayOf(
+            binding.layoutPlayerVolume.volumeDown,
+            binding.layoutPlayerVolume.volumeUp,
+            binding.layoutPlayerVolume.nextSong
+        ).forEach {
             it.setOnClickListener(onVolumeClick)
         }
     }
@@ -246,18 +269,18 @@ class PlayerFragment : BaseMusicFragment() {
 
     override fun onServiceConnected(service: MusicService) {
         super.onServiceConnected(service)
-  //      onMetaChanged()
-  //      onPlayStateChange()
+        //      onMetaChanged()
+        //      onPlayStateChange()
     }
 
     override fun onStart() {
         super.onStart()
-   //     overridePendingTransition(R.anim.audio_in, 0)
+        //     overridePendingTransition(R.anim.audio_in, 0)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
- //       coverFragment.clearAnim()
+        //       coverFragment.clearAnim()
     }
 
     /**
@@ -268,7 +291,9 @@ class PlayerFragment : BaseMusicFragment() {
         when (v.id) {
             R.id.playbar_prev -> intent.putExtra(MusicService.EXTRA_CONTROL, Command.PREV)
             R.id.playbar_next -> intent.putExtra(MusicService.EXTRA_CONTROL, Command.NEXT)
-            R.id.playbar_play_container -> intent.putExtra(MusicService.EXTRA_CONTROL, Command.TOGGLE)
+            R.id.playbar_play_container -> intent.putExtra(
+                MusicService.EXTRA_CONTROL, Command.TOGGLE
+            )
         }
         Util.sendLocalBroadcast(intent)
     }
@@ -280,14 +305,22 @@ class PlayerFragment : BaseMusicFragment() {
         when (v.id) {
             R.id.playbar_model -> {
                 var currentModel = getPlayModel()
-                currentModel = if (currentModel == Constants.MODE_REPEAT) Constants.MODE_LOOP else ++currentModel
+                currentModel =
+                    if (currentModel == Constants.MODE_REPEAT) Constants.MODE_LOOP else ++currentModel
                 setPlayModel(currentModel)
-                playbar_model.setImageDrawable(Theme.tintDrawable(when (currentModel) {
-                    Constants.MODE_LOOP -> R.drawable.play_btn_loop
-                    Constants.MODE_SHUFFLE -> R.drawable.play_btn_shuffle
-                    else -> R.drawable.play_btn_loop_one
-                }, ThemeStore.playerBtnColor))
-                val msg = if (currentModel == Constants.MODE_LOOP) getString(R.string.model_normal) else if (currentModel == Constants.MODE_SHUFFLE) getString(R.string.model_random) else getString(R.string.model_repeat)
+                playbar_model.setImageDrawable(
+                    Theme.tintDrawable(
+                        when (currentModel) {
+                            Constants.MODE_LOOP -> R.drawable.play_btn_loop
+                            Constants.MODE_SHUFFLE -> R.drawable.play_btn_shuffle
+                            else -> R.drawable.play_btn_loop_one
+                        }, ThemeStore.playerBtnColor
+                    )
+                )
+                val msg =
+                    if (currentModel == Constants.MODE_LOOP) getString(R.string.model_normal) else if (currentModel == Constants.MODE_SHUFFLE) getString(
+                        R.string.model_random
+                    ) else getString(R.string.model_repeat)
                 //刷新下一首
                 if (currentModel != Constants.MODE_SHUFFLE) {
                     next_song.text = getString(R.string.next_song, getNextSong().title)
@@ -295,207 +328,285 @@ class PlayerFragment : BaseMusicFragment() {
                 ToastUtil.show(context, msg)
             }
 
-            R.id.playbar_playinglist -> newInstance().show(childFragmentManager, PlayQueueDialog::class.java.simpleName)
+            R.id.playbar_playinglist -> newInstance().show(
+                childFragmentManager, PlayQueueDialog::class.java.simpleName
+            )
 
             R.id.top_hide -> startActivity(Intent(context, SoundEffectActivity::class.java))
             R.id.top_more -> {
-            val popupMenu = context?.let { PopupMenu(it, v, Gravity.TOP) }
-            if (popupMenu != null) {
-                popupMenu.menuInflater.inflate(R.menu.menu_audio_item, popupMenu.menu)
-                popupMenu.setOnMenuItemClickListener {
-                    when (it.itemId) {
-                        R.id.menu_lyric -> {
-                            val alreadyIgnore = (SPUtil
-                                .getValue(
-                                    App.context, SPUtil.LYRIC_KEY.NAME, song.id.toString(),
-                                    SPUtil.LYRIC_KEY.LYRIC_DEFAULT) == SPUtil.LYRIC_KEY.LYRIC_IGNORE)
-
-                            //   val  = ref.get()?.lyricFragment ?: return true
-                            Theme.getBaseDialog(activity)
-                                .items(
-                                    getString(R.string.embedded_lyric),
-                                    getString(R.string.local),
-                                    getString(R.string.kugou),
-                                    getString(R.string.netease),
-                                    getString(R.string.qq),
-                                    getString(R.string.select_lrc),
-                                    getString(if (!alreadyIgnore) R.string.ignore_lrc else R.string.cancel_ignore_lrc),
-                                    getString(R.string.lyric_adjust_font_size),
-                                    getString(R.string.change_offset))
-                                .itemsCallback { dialog, itemView, position, text ->
-                                    when (position) {
-                                        0, 1, 2, 3, 4 -> { //0内嵌 1本地 2酷狗 3网易 4qq
-                                            SPUtil.putValue(App.context, SPUtil.LYRIC_KEY.NAME, song.id.toString(), position + 2)
-                                            lyricFragment.updateLrc(song, true)
-                                            Util.sendLocalBroadcast(MusicUtil.makeCmdIntent(Command.CHANGE_LYRIC))
-                                        }
-                                        5 -> { //手动选择歌词
-                                            val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
-                                                type = MimeTypeMap.getSingleton().getMimeTypeFromExtension("lrc")
-                                                addCategory(Intent.CATEGORY_OPENABLE)
-                                            }
-                                            activity?.let { it1 ->
-                                                Util.startActivityForResultSafely(
-                                                    it1,
-                                                    intent,
-                                                    PlayerActivity.REQUEST_SELECT_LYRIC
+                var popupWindow1 = PopupWindow()
+                var popRootView1 = LayoutInflater.from(requireContext()).inflate(
+                    R.layout.pop_player_more, null, false
+                )
+                var pupupContent1 = popRootView1.findViewById(R.id.root) as ConstraintLayout;
+                pupupContent1.forEachChild { view ->
+                    view.setOnClickListener{ item->
+                        when (view.id) {
+                            R.id.menu_lyric -> {
+                                val alreadyIgnore = (SPUtil.getValue(
+                                    App.context,
+                                    SPUtil.LYRIC_KEY.NAME,
+                                    song.id.toString(),
+                                    SPUtil.LYRIC_KEY.LYRIC_DEFAULT
+                                ) == SPUtil.LYRIC_KEY.LYRIC_IGNORE)
+                                var popupWindow = PopupWindow()
+                                var popRootView = LayoutInflater.from(requireContext()).inflate(
+                                    R.layout.pop_player_more_lyric, null, false
+                                )
+                                var pupupContent =
+                                    popRootView.findViewById(R.id.play_more_layout) as LinearLayout;
+                                pupupContent.forEachChild { item1 ->
+                                    var textItem = item1 as TextView
+                                    if (textItem.tag.equals("6")) {
+                                        var a =
+                                            if (!alreadyIgnore) "忽略歌词" else "取消忽略歌词"
+                                        textItem.text = a;
+                                    }
+                                    item1.setOnClickListener { view ->
+                                        var position = Integer.getInteger(view.tag.toString());
+                                        when (position) {
+                                            0, 1, 2, 3, 4 -> { //0内嵌 1本地 2酷狗 3网易 4qq
+                                                SPUtil.putValue(
+                                                    App.context,
+                                                    SPUtil.LYRIC_KEY.NAME,
+                                                    song.id.toString(),
+                                                    position + 2
+                                                )
+                                                lyricFragment.updateLrc(song, true)
+                                                Util.sendLocalBroadcast(
+                                                    MusicUtil.makeCmdIntent(
+                                                        Command.CHANGE_LYRIC
+                                                    )
                                                 )
                                             }
-                                        }
-                                        6 -> { //忽略或者取消忽略
-                                            Theme.getBaseDialog(activity)
-                                                .title(if (!alreadyIgnore) R.string.confirm_ignore_lrc else R.string.confirm_cancel_ignore_lrc)
-                                                .negativeText(R.string.cancel)
-                                                .positiveText(R.string.confirm)
-                                                .onPositive { dialog1, which ->
-                                                    if (!alreadyIgnore) {//忽略
-                                                        SPUtil.putValue(activity, SPUtil.LYRIC_KEY.NAME, song.id.toString(),
-                                                            SPUtil.LYRIC_KEY.LYRIC_IGNORE)
-                                                        lyricFragment.updateLrc(song)
-                                                    } else {//取消忽略
-                                                        SPUtil.putValue(activity, SPUtil.LYRIC_KEY.NAME, song.id.toString(),
-                                                            SPUtil.LYRIC_KEY.LYRIC_DEFAULT)
-                                                        lyricFragment.updateLrc(song)
+
+                                            5 -> { //手动选择歌词
+                                                val intent =
+                                                    Intent(Intent.ACTION_GET_CONTENT).apply {
+                                                        type = MimeTypeMap.getSingleton()
+                                                            .getMimeTypeFromExtension("lrc")
+                                                        addCategory(Intent.CATEGORY_OPENABLE)
                                                     }
-                                                    Util.sendLocalBroadcast(
-                                                        MusicUtil.makeCmdIntent(
-                                                            Command.CHANGE_LYRIC
-                                                        )
+                                                activity?.let { it1 ->
+                                                    Util.startActivityForResultSafely(
+                                                        it1,
+                                                        intent,
+                                                        PlayerActivity.REQUEST_SELECT_LYRIC
                                                     )
                                                 }
-                                                .show()
-                                        }
-                                        7 -> { //字体大小调整
-                                            Theme.getBaseDialog(activity)
-                                                .items(R.array.lyric_font_size)
-                                                .itemsCallback { dialog, itemView, position, text ->
-                                                    lyricFragment.setLyricScalingFactor(position)
-                                                }
-                                                .show()
-                                        }
-                                        8 -> { //歌词时间轴调整
-                                            showLyricOffsetView()
+                                            }
+
+                                            6 -> { //忽略或者取消忽略
+                                                Theme.getBaseDialog(activity)
+                                                    .title(if (!alreadyIgnore) R.string.confirm_ignore_lrc else R.string.confirm_cancel_ignore_lrc)
+                                                    .negativeText(R.string.cancel)
+                                                    .positiveText(R.string.confirm)
+                                                    .onPositive { dialog1, which ->
+                                                        if (!alreadyIgnore) {//忽略
+                                                            SPUtil.putValue(
+                                                                activity,
+                                                                SPUtil.LYRIC_KEY.NAME,
+                                                                song.id.toString(),
+                                                                SPUtil.LYRIC_KEY.LYRIC_IGNORE
+                                                            )
+                                                            lyricFragment.updateLrc(song)
+                                                        } else {//取消忽略
+                                                            SPUtil.putValue(
+                                                                activity,
+                                                                SPUtil.LYRIC_KEY.NAME,
+                                                                song.id.toString(),
+                                                                SPUtil.LYRIC_KEY.LYRIC_DEFAULT
+                                                            )
+                                                            lyricFragment.updateLrc(song)
+                                                        }
+                                                        Util.sendLocalBroadcast(
+                                                            MusicUtil.makeCmdIntent(
+                                                                Command.CHANGE_LYRIC
+                                                            )
+                                                        )
+                                                    }.show()
+                                            }
+
+                                            7 -> { //字体大小调整
+                                                Theme.getBaseDialog(activity)
+                                                    .items(R.array.lyric_font_size)
+                                                    .itemsCallback { dialog, itemView, position, text ->
+                                                        lyricFragment.setLyricScalingFactor(
+                                                            position
+                                                        )
+                                                    }.show()
+                                            }
+
+                                            8 -> { //歌词时间轴调整
+                                                showLyricOffsetView()
+                                            }
                                         }
                                     }
+                                }
+                                popupWindow.contentView = pupupContent
+                                popupWindow.width = WindowManager.LayoutParams.MATCH_PARENT
+                                popupWindow.height = WindowManager.LayoutParams.WRAP_CONTENT
+                                popupWindow.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                                popupWindow.isFocusable = true
+                                popupWindow.showAtLocation(
+                                    requireActivity().findViewById(android.R.id.content),
+                                    Gravity.BOTTOM,
+                                    0,
+                                    0
+                                )
+                            }
+
+                            R.id.menu_edit -> {
+                            }
+
+                            R.id.menu_timer -> {
+                                //  val fm = activity?.supportFragmentManager ?: return true
+                                /*activity?.let { it1 ->
+                                    TimerDialog.newInstance().show(
+                                        it1.supportFragmentManager,
+                                        TimerDialog::class.java.simpleName
+                                    )
+                                }*/
+                                var popupWindow2 = PopupWindow()
+                                var popRootView2 = LayoutInflater.from(requireContext()).inflate(
+                                    R.layout.pop_player_timer, null, false
+                                )
+                                var pupupContent2 = popRootView2.findViewById(R.id.pop_timer_layout) as LinearLayout;
+                                pupupContent2.forEachChild { item1 ->
 
                                 }
-                                .show()
-                        }
-                        R.id.menu_edit -> {
-                          //  AudioTag(activity = BaseActivity(), song).edit()
-                        }
-//      R.id.menu_detail -> {
-//        audioTag.detail()
-//      }
-                        R.id.menu_timer -> {
-                          //  val fm = activity?.supportFragmentManager ?: return true
-                            activity?.let { it1 -> TimerDialog.newInstance().show(it1.supportFragmentManager, TimerDialog::class.java.simpleName) }
-                        }
-//      R.id.menu_eq -> {
-//        EQHelper.startEqualizer(activity)
-//      }
-//      R.id.menu_collect -> {
-//        DatabaseRepository.getInstance()
-//            .insertToPlayList(listOf(song.id), getString(R.string.my_favorite))
-//            .compose<Int>(applySingleScheduler<Int>())
-//            .subscribe(
-//                { count -> ToastUtil.show(activity, getString(R.string.add_song_playlist_success, 1, getString(R.string.my_favorite))) },
-//                { throwable -> ToastUtil.show(activity, R.string.add_song_playlist_error) })
-//      }
-                        R.id.menu_add_to_playlist -> {
-                            activity?.let { it1 ->
-                                AddtoPlayListDialog.newInstance(listOf(song.id))
-                                    .show(it1.supportFragmentManager, AddtoPlayListDialog::class.java.simpleName)
+                                popupWindow2.contentView = popRootView2
+                                popupWindow2.width = WindowManager.LayoutParams.MATCH_PARENT
+                                popupWindow2.height = WindowManager.LayoutParams.WRAP_CONTENT
+                                popupWindow2.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                                popupWindow2.isFocusable = true
+                                popupWindow2.showAtLocation(
+                                    requireActivity().findViewById(android.R.id.content),
+                                    Gravity.BOTTOM,
+                                    0,
+                                    0
+                                )
+
+                            }
+
+                            R.id.menu_add_to_playlist -> {
+                                activity?.let { it1 ->
+                                    AddtoPlayListDialog.newInstance(listOf(song.id)).show(
+                                        it1.supportFragmentManager,
+                                        AddtoPlayListDialog::class.java.simpleName
+                                    )
+                                }
+                            }
+
+                            R.id.menu_delete -> {
+                                val checked = arrayOf(
+                                    SPUtil.getValue(
+                                        App.context,
+                                        SPUtil.SETTING_KEY.NAME,
+                                        SPUtil.SETTING_KEY.DELETE_SOURCE,
+                                        false
+                                    )
+                                )
+
+                                Theme.getBaseDialog(activity)
+                                    .content(R.string.confirm_delete_from_library)
+                                    .titleColor(Color.WHITE)
+                                    .contentColor(Color.WHITE)
+                                    .positiveText(R.string.confirm)
+                                    .negativeText(R.string.cancel)
+                                    .checkBoxPromptRes(R.string.delete_source,
+                                        checked[0],
+                                        CompoundButton.OnCheckedChangeListener { buttonView, isChecked ->
+                                            checked[0] = isChecked
+                                        }).onAny { dialog, which ->
+                                        if (which == DialogAction.POSITIVE) {
+                                            DeleteHelper.deleteSong(
+                                                activity = BaseActivity(),
+                                                song.id,
+                                                checked[0],
+                                                false,
+                                                ""
+                                            )
+                                                .compose<Boolean>(RxUtil.applySingleScheduler<Boolean>())
+                                                .subscribe(
+                                                    { success ->
+                                                        if (success) {
+                                                            //移除的是正在播放的歌曲
+                                                            if (song.id == getCurrentSong().id) {
+                                                                Util.sendCMDLocalBroadcast(
+                                                                    Command.NEXT
+                                                                )
+                                                            }
+                                                        }
+                                                        ToastUtil.show(
+                                                            activity,
+                                                            if (success) R.string.delete_success else R.string.delete_error
+                                                        )
+                                                    },
+                                                    {
+                                                        ToastUtil.show(
+                                                            activity,
+                                                            R.string.delete
+                                                        )
+                                                    })
+                                        }
+                                    }.show()
                             }
                         }
-                        R.id.menu_delete -> {
-                            val checked = arrayOf(SPUtil.getValue(App.context, SPUtil.SETTING_KEY.NAME, SPUtil.SETTING_KEY.DELETE_SOURCE, false))
 
-                            Theme.getBaseDialog(activity)
-                                .content(R.string.confirm_delete_from_library)
-                                .positiveText(R.string.confirm)
-                                .negativeText(R.string.cancel)
-                                .checkBoxPromptRes(R.string.delete_source, checked[0], CompoundButton.OnCheckedChangeListener { buttonView, isChecked -> checked[0] = isChecked })
-                                .onAny { dialog, which ->
-                                    if (which == DialogAction.POSITIVE) {
-                                        DeleteHelper.deleteSong(activity= BaseActivity(), song.id, checked[0], false, "")
-                                            .compose<Boolean>(RxUtil.applySingleScheduler<Boolean>())
-                                            .subscribe({ success ->
-                                                if (success) {
-                                                    //移除的是正在播放的歌曲
-                                                    if (song.id == getCurrentSong().id) {
-                                                        Util.sendCMDLocalBroadcast(Command.NEXT)
-                                                    }
-                                                }
-                                                ToastUtil.show(activity, if (success) R.string.delete_success else R.string.delete_error)
-                                            }, { ToastUtil.show(activity, R.string.delete) })
-                                    }
-                                }
-                                .show()
-                        }
-                        //            case R.id.menu_vol:
-                        //                AudioManager audioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
-                        //                if(audioManager != null){
-                        //                    audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,audioManager.getStreamVolume(AudioManager.STREAM_MUSIC),AudioManager.FLAG_PLAY_SOUND | AudioManager.FLAG_SHOW_UI);
-                        //                }
-//      R.id.menu_speed -> {
-//        getBaseDialog(activity)
-//            .title(R.string.speed)
-//            .input(SPUtil.getValue(App.context, SPUtil.SETTING_KEY.NAME, SPUtil.SETTING_KEY.SPEED, "1.0"),
-//                "",
-//                MaterialDialog.InputCallback { dialog, input ->
-//                  var speed = 0f
-//                  try {
-//                    speed = java.lang.Float.parseFloat(input.toString())
-//                  } catch (ignored: Exception) {
-//
-//                  }
-//
-//                  if (speed > 2f || speed < 0.5f) {
-//                    ToastUtil.show(activity, R.string.speed_range_tip)
-//                    return@InputCallback
-//                  }
-//                  SPUtil.putValue(activity, SPUtil.SETTING_KEY.NAME, SPUtil.SETTING_KEY.SPEED,
-//                      input.toString())
-//                })
-//            .show()
-//      }
                     }
-                   true
-                }  //AudioPopupListenerNew(activity = BaseActivity(),this,lyricFragment, song)
-                popupMenu.show()
-            }
-
+                }
+                popupWindow1.contentView = popRootView1
+                popupWindow1.width = WindowManager.LayoutParams.MATCH_PARENT
+                popupWindow1.height = WindowManager.LayoutParams.WRAP_CONTENT
+                popupWindow1.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                popupWindow1.isFocusable = true
+                popupWindow1.showAtLocation(
+                    requireActivity().findViewById(android.R.id.content),
+                    Gravity.BOTTOM,
+                    0,
+                    0
+                )
             }
 
             R.id.equalizer -> {
                 //EQHelper.startEqualizer(context)
                 startActivity(Intent(context, SoundEffectActivity::class.java))
             }
+
             R.id.favorite -> {
                 binding.layoutPlayerMenus.favorite.setImageResource(if (MusicServiceRemote.service?.isLove == true) R.drawable.favorite_unchecked else R.drawable.favorite_checked)
-                if (MusicServiceRemote.service?.isLove == true){
-                    Theme.tintDrawable(favorite, R.drawable.favorite_unchecked, ThemeStore.playerBtnColor)
+                if (MusicServiceRemote.service?.isLove == true) {
+                    Theme.tintDrawable(
+                        favorite, R.drawable.favorite_unchecked, ThemeStore.playerBtnColor
+                    )
                 }
                 Util.sendCMDLocalBroadcast(Command.LOVE)
             }
 
             R.id.speed -> {
-                Theme.getBaseDialog(context).title(R.string.speed).input(SPUtil.getValue(context, SPUtil.SETTING_KEY.NAME, SPUtil.SETTING_KEY.SPEED, "1.0"), "", MaterialDialog.InputCallback { dialog, input ->
-                            var speed = 0f
-                            try {
-                                speed = java.lang.Float.parseFloat(input.toString())
-                            } catch (ignored: Exception) {
+                Theme.getBaseDialog(context).title(R.string.speed).input(SPUtil.getValue(
+                    context, SPUtil.SETTING_KEY.NAME, SPUtil.SETTING_KEY.SPEED, "1.0"
+                ), "", MaterialDialog.InputCallback { dialog, input ->
+                    var speed = 0f
+                    try {
+                        speed = java.lang.Float.parseFloat(input.toString())
+                    } catch (ignored: Exception) {
 
-                            }
+                    }
 
-                            if (speed > 2f || speed < 0.5f) {
-                                ToastUtil.show(context, R.string.speed_range_tip)
-                                return@InputCallback
-                            }
-                            SPUtil.putValue(context, SPUtil.SETTING_KEY.NAME, SPUtil.SETTING_KEY.SPEED, input.toString())
-                            binding.layoutPlayerMenus.speed.setText(input.toString())
-                        }).show()
+                    if (speed > 2f || speed < 0.5f) {
+                        ToastUtil.show(context, R.string.speed_range_tip)
+                        return@InputCallback
+                    }
+                    SPUtil.putValue(
+                        context,
+                        SPUtil.SETTING_KEY.NAME,
+                        SPUtil.SETTING_KEY.SPEED,
+                        input.toString()
+                    )
+                    binding.layoutPlayerMenus.speed.setText(input.toString())
+                }).show()
             }
         }
     }
@@ -504,12 +615,20 @@ class PlayerFragment : BaseMusicFragment() {
     private val onVolumeClick = View.OnClickListener { v ->
         when (v.id) {
             R.id.volume_down -> Completable.fromAction {
-                        audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_LOWER, AudioManager.FLAG_PLAY_SOUND)
-                    }.subscribeOn(Schedulers.io()).subscribe()
+                audioManager.adjustStreamVolume(
+                    AudioManager.STREAM_MUSIC,
+                    AudioManager.ADJUST_LOWER,
+                    AudioManager.FLAG_PLAY_SOUND
+                )
+            }.subscribeOn(Schedulers.io()).subscribe()
 
             R.id.volume_up -> Completable.fromAction {
-                        audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_RAISE, AudioManager.FLAG_PLAY_SOUND)
-                    }.subscribeOn(Schedulers.io()).subscribe()
+                audioManager.adjustStreamVolume(
+                    AudioManager.STREAM_MUSIC,
+                    AudioManager.ADJUST_RAISE,
+                    AudioManager.FLAG_PLAY_SOUND
+                )
+            }.subscribeOn(Schedulers.io()).subscribe()
 
             R.id.next_song -> if (bottomConfig == BOTTOM_SHOW_BOTH) {
                 next_song.startAnimation(makeAnimation(next_song, false))
@@ -519,7 +638,16 @@ class PlayerFragment : BaseMusicFragment() {
             }
         }
         if (v.id != R.id.next_song) {
-            Single.zip(Single.fromCallable { audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC) }, Single.fromCallable { audioManager.getStreamVolume(AudioManager.STREAM_MUSIC) }, BiFunction { max: Int, current: Int -> longArrayOf(max.toLong(), current.toLong()) }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe { longs: LongArray -> volume_seekbar.progress = (longs[1] * 1.0 / longs[0] * 100).toInt() }
+            Single.zip(Single.fromCallable { audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC) },
+                Single.fromCallable { audioManager.getStreamVolume(AudioManager.STREAM_MUSIC) },
+                BiFunction { max: Int, current: Int ->
+                    longArrayOf(
+                        max.toLong(), current.toLong()
+                    )
+                }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe { longs: LongArray ->
+                    volume_seekbar.progress = (longs[1] * 1.0 / longs[0] * 100).toInt()
+                }
         }
     }
 
@@ -547,8 +675,11 @@ class PlayerFragment : BaseMusicFragment() {
 
         val width = DensityUtil.dip2px(context, 8f)
         val height = DensityUtil.dip2px(context, 2f)
-        highLightIndicator = GradientDrawableMaker().width(width).height(height).color(ThemeStore.accentColor).make()
-        normalIndicator = GradientDrawableMaker().width(width).height(height).color(ThemeStore.accentColor).alpha(0.3f).make()
+        highLightIndicator =
+            GradientDrawableMaker().width(width).height(height).color(ThemeStore.accentColor).make()
+        normalIndicator =
+            GradientDrawableMaker().width(width).height(height).color(ThemeStore.accentColor)
+                .alpha(0.3f).make()
         getView()?.let { indicators.add(it.findViewById(R.id.guide_01)) }
         //indicators.add(findViewById(R.id.guide_02))
         getView()?.let { indicators.add(it.findViewById(R.id.guide_03)) }
@@ -608,25 +739,35 @@ class PlayerFragment : BaseMusicFragment() {
         })
 
         //音量的Seekbar
-        Single.zip(Single.fromCallable { audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC) }, Single.fromCallable { audioManager.getStreamVolume(AudioManager.STREAM_MUSIC) }, BiFunction { max: Int, current: Int -> intArrayOf(max, current) }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe { ints: IntArray ->
-                    val current = ints[1]
-                    val max = ints[0]
-                    volume_seekbar.progress = (current * 1.0 / max * 100).toInt()
-                    volume_seekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                        override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                            if (bottomConfig == BOTTOM_SHOW_BOTH) {
-                                handler.removeCallbacks(volumeRunnable)
-                                handler.postDelayed(volumeRunnable, DELAY_SHOW_NEXT_SONG.toLong())
-                            }
-                            if (fromUser) {
-                                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, (seekBar.progress / 100f * max).toInt(), AudioManager.FLAG_PLAY_SOUND)
-                            }
+        Single.zip(Single.fromCallable { audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC) },
+            Single.fromCallable { audioManager.getStreamVolume(AudioManager.STREAM_MUSIC) },
+            BiFunction { max: Int, current: Int -> intArrayOf(max, current) })
+            .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+            .subscribe { ints: IntArray ->
+                val current = ints[1]
+                val max = ints[0]
+                volume_seekbar.progress = (current * 1.0 / max * 100).toInt()
+                volume_seekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                    override fun onProgressChanged(
+                        seekBar: SeekBar, progress: Int, fromUser: Boolean
+                    ) {
+                        if (bottomConfig == BOTTOM_SHOW_BOTH) {
+                            handler.removeCallbacks(volumeRunnable)
+                            handler.postDelayed(volumeRunnable, DELAY_SHOW_NEXT_SONG.toLong())
                         }
+                        if (fromUser) {
+                            audioManager.setStreamVolume(
+                                AudioManager.STREAM_MUSIC,
+                                (seekBar.progress / 100f * max).toInt(),
+                                AudioManager.FLAG_PLAY_SOUND
+                            )
+                        }
+                    }
 
-                        override fun onStartTrackingTouch(seekBar: SeekBar) {}
-                        override fun onStopTrackingTouch(seekBar: SeekBar) {}
-                    })
-                }
+                    override fun onStartTrackingTouch(seekBar: SeekBar) {}
+                    override fun onStopTrackingTouch(seekBar: SeekBar) {}
+                })
+            }
         if (bottomConfig == BOTTOM_SHOW_BOTH) {
             handler.postDelayed(volumeRunnable, DELAY_SHOW_NEXT_SONG.toLong())
         }
@@ -662,9 +803,13 @@ class PlayerFragment : BaseMusicFragment() {
             }
         }
 
-        speed.setText(SPUtil.getValue(context, SPUtil.SETTING_KEY.NAME, SPUtil.SETTING_KEY.SPEED, "1.0"))
+        speed.setText(
+            SPUtil.getValue(
+                context, SPUtil.SETTING_KEY.NAME, SPUtil.SETTING_KEY.SPEED, "1.0"
+            )
+        )
         favorite.setImageResource(if (MusicServiceRemote.service?.isLove == true) R.drawable.favorite_checked else R.drawable.favorite_unchecked)
-        if (MusicServiceRemote.service?.isLove != true){
+        if (MusicServiceRemote.service?.isLove != true) {
             Theme.tintDrawable(favorite, R.drawable.favorite_unchecked, ThemeStore.playerBtnColor)
         }
 //        Single.fromCallable { MediaDecode().GetId3Info(song.data) }.observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe({ pid3info -> updateTagInfo(pid3info) }, { updateTagInfo(null) })
@@ -736,7 +881,11 @@ class PlayerFragment : BaseMusicFragment() {
             view_pager.currentItem = 0
 
             view_pager.addOnPageChangeListener(object : OnPageChangeListener {
-                override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+                override fun onPageScrolled(
+                    position: Int, positionOffset: Float, positionOffsetPixels: Int
+                ) {
+                }
+
                 override fun onPageSelected(position: Int) {
                     indicators[prevPosition].setImageDrawable(normalIndicator)
                     indicators[position].setImageDrawable(highLightIndicator)
@@ -746,7 +895,9 @@ class PlayerFragment : BaseMusicFragment() {
                 override fun onPageScrollStateChanged(state: Int) {}
             })
         } else {
-            fragmentManager.beginTransaction().replace(R.id.container_cover, coverFragment).replace(R.id.container_lyric, lyricFragment).replace(R.id.container_tag, tagFragment).commit()
+            fragmentManager.beginTransaction().replace(R.id.container_cover, coverFragment)
+                .replace(R.id.container_lyric, lyricFragment)
+                .replace(R.id.container_tag, tagFragment).commit()
         }
 
     }
@@ -811,7 +962,9 @@ class PlayerFragment : BaseMusicFragment() {
             seekbar.max = duration
             //更新下一首歌曲
             next_song.text = getString(R.string.next_song, getNextSong().title)
-            coverFragment.setImage(song, operation != Command.TOGGLE && !firstStart, operation != Command.TOGGLE)
+            coverFragment.setImage(
+                song, operation != Command.TOGGLE && !firstStart, operation != Command.TOGGLE
+            )
             firstStart = false
         }
     }
@@ -834,7 +987,9 @@ class PlayerFragment : BaseMusicFragment() {
                     if (volume_seekbar.visibility == View.VISIBLE) {
                         val max = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
                         val current = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
-                        activity!!.runOnUiThread { volume_seekbar.progress = (current * 1.0 / max * 100).toInt() }
+                        activity!!.runOnUiThread {
+                            volume_seekbar.progress = (current * 1.0 / max * 100).toInt()
+                        }
                     }
                     if (!isPlaying()) {
                         sleep(500)
@@ -856,7 +1011,9 @@ class PlayerFragment : BaseMusicFragment() {
      * 初始化底部区域
      */
     private fun setUpBottom() {
-        bottomConfig = SPUtil.getValue(context, SETTING_KEY.NAME, SETTING_KEY.BOTTOM_OF_NOW_PLAYING_SCREEN, BOTTOM_SHOW_NONE)
+        bottomConfig = SPUtil.getValue(
+            context, SETTING_KEY.NAME, SETTING_KEY.BOTTOM_OF_NOW_PLAYING_SCREEN, BOTTOM_SHOW_NONE
+        )
         if (!context?.isPortraitOrientation()!!) { //横屏不显示底部
             bottomConfig = BOTTOM_SHOW_NONE
         }
@@ -895,7 +1052,8 @@ class PlayerFragment : BaseMusicFragment() {
      * 根据主题颜色修改按钮颜色
      */
     private fun setUpViewColor() {
-        val materialPrimaryColor = if (ColorUtil.isColorCloseToBlack(materialPrimaryColor)) Color.WHITE else Color.BLACK
+        val materialPrimaryColor =
+            if (ColorUtil.isColorCloseToBlack(materialPrimaryColor)) Color.WHITE else Color.BLACK
         val tintColor = ThemeStore.playerBtnColor
         updateSeekBarColor(materialPrimaryColor)
         //        mProgressSeekBar.setThumb(Theme.getShape(GradientDrawable.OVAL,ThemeStore.getAccentColor(),DensityUtil.dip2px(context,10),DensityUtil.dip2px(context,10)));
@@ -920,8 +1078,13 @@ class PlayerFragment : BaseMusicFragment() {
         Theme.tintDrawable(top_hide, R.drawable.icon_player_back, tintColor)
         Theme.tintDrawable(top_more, R.drawable.icon_player_more, tintColor)
         //播放模式与播放队列
-        val playMode = SPUtil.getValue(context, SETTING_KEY.NAME, SETTING_KEY.PLAY_MODEL, Constants.MODE_LOOP)
-        Theme.tintDrawable(playbar_model, if (playMode == Constants.MODE_LOOP) R.drawable.play_btn_loop else if (playMode == Constants.MODE_SHUFFLE) R.drawable.play_btn_shuffle else R.drawable.play_btn_loop_one, tintColor)
+        val playMode =
+            SPUtil.getValue(context, SETTING_KEY.NAME, SETTING_KEY.PLAY_MODEL, Constants.MODE_LOOP)
+        Theme.tintDrawable(
+            playbar_model,
+            if (playMode == Constants.MODE_LOOP) R.drawable.play_btn_loop else if (playMode == Constants.MODE_SHUFFLE) R.drawable.play_btn_shuffle else R.drawable.play_btn_loop_one,
+            tintColor
+        )
         Theme.tintDrawable(playbar_playinglist, R.drawable.play_btn_normal_list, tintColor)
         Theme.tintDrawable(equalizer, R.drawable.icon_equalizer, tintColor)
         Theme.tintDrawable(speed, R.drawable.bg_quick, tintColor)
@@ -950,8 +1113,20 @@ class PlayerFragment : BaseMusicFragment() {
         val inset = DensityUtil.dip2px(context, 6f)
         val width = DensityUtil.dip2px(context, 2f)
         val height = DensityUtil.dip2px(context, 6f)
-        seekbar.thumb = InsetDrawable(GradientDrawableMaker().width(width).height(height).color(color).make(), inset, inset, inset, inset)
-        volume_seekbar.thumb = InsetDrawable(GradientDrawableMaker().width(width).height(height).color(color).make(), inset, inset, inset, inset)
+        seekbar.thumb = InsetDrawable(
+            GradientDrawableMaker().width(width).height(height).color(color).make(),
+            inset,
+            inset,
+            inset,
+            inset
+        )
+        volume_seekbar.thumb = InsetDrawable(
+            GradientDrawableMaker().width(width).height(height).color(color).make(),
+            inset,
+            inset,
+            inset,
+            inset
+        )
     }
 
     private fun setProgressDrawable(seekBar: SeekBar, color: Int) {
@@ -965,25 +1140,26 @@ class PlayerFragment : BaseMusicFragment() {
     @SuppressLint("CheckResult")
     private fun updateSwatch(bitmap: Bitmap?) {
         Single.fromCallable {
-                    bitmap
-                }.map { result: Bitmap ->
-                    val palette = Palette.from(result).generate()
-                    if (palette.mutedSwatch != null) {
-                        return@map palette.mutedSwatch
-                    }
-                    val swatches = ArrayList<Swatch>(palette.swatches)
-                    swatches.sortWith(Comparator { o1, o2 -> o1.population.compareTo(o2.population) })
+            bitmap
+        }.map { result: Bitmap ->
+            val palette = Palette.from(result).generate()
+            if (palette.mutedSwatch != null) {
+                return@map palette.mutedSwatch
+            }
+            val swatches = ArrayList<Swatch>(palette.swatches)
+            swatches.sortWith(Comparator { o1, o2 -> o1.population.compareTo(o2.population) })
 
-                    return@map if (swatches.isNotEmpty()) swatches[0] else Swatch(Color.GRAY, 100);
-                }.onErrorReturnItem(Swatch(Color.GRAY, 100)).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe({ swatch: Swatch? ->
-                    if (swatch == null) {
-                        return@subscribe
-                    }
+            return@map if (swatches.isNotEmpty()) swatches[0] else Swatch(Color.GRAY, 100);
+        }.onErrorReturnItem(Swatch(Color.GRAY, 100)).subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread()).subscribe({ swatch: Swatch? ->
+                if (swatch == null) {
+                    return@subscribe
+                }
 
-                    updateViewsColorBySwatch(swatch)
-                    startBGColorAnimation(swatch)
+                updateViewsColorBySwatch(swatch)
+                startBGColorAnimation(swatch)
 
-                }) { t: Throwable? -> Timber.v(t) }
+            }) { t: Throwable? -> Timber.v(t) }
     }
 
     private fun updateViewsColorBySwatch(swatch: Swatch) {
@@ -994,8 +1170,12 @@ class PlayerFragment : BaseMusicFragment() {
         volume_down.setColorFilter(ColorUtil.adjustAlpha(swatch.rgb, 0.5f), PorterDuff.Mode.SRC_IN)
         volume_up.setColorFilter(ColorUtil.adjustAlpha(swatch.rgb, 0.5f), PorterDuff.Mode.SRC_IN)
 
-        playbar_model.setColorFilter(ColorUtil.adjustAlpha(swatch.rgb, 0.5f), PorterDuff.Mode.SRC_IN)
-        playbar_playinglist.setColorFilter(ColorUtil.adjustAlpha(swatch.rgb, 0.5f), PorterDuff.Mode.SRC_IN)
+        playbar_model.setColorFilter(
+            ColorUtil.adjustAlpha(swatch.rgb, 0.5f), PorterDuff.Mode.SRC_IN
+        )
+        playbar_playinglist.setColorFilter(
+            ColorUtil.adjustAlpha(swatch.rgb, 0.5f), PorterDuff.Mode.SRC_IN
+        )
 
         normalIndicator.setColor(ColorUtil.adjustAlpha(swatch.rgb, 0.3f))
         highLightIndicator.setColor(swatch.rgb)
@@ -1013,11 +1193,17 @@ class PlayerFragment : BaseMusicFragment() {
     private fun startBGColorAnimation(swatch: Swatch) {
         valueAnimator?.cancel()
 
-        val surfaceColor = Theme.resolveColor(context, R.attr.colorSurface, if (ThemeStore.isLightTheme) Color.WHITE else Color.BLACK)
+        val surfaceColor = Theme.resolveColor(
+            context, R.attr.colorSurface, if (ThemeStore.isLightTheme) Color.WHITE else Color.BLACK
+        )
         valueAnimator = ValueAnimator.ofObject(ArgbEvaluator(), surfaceColor, swatch.rgb)
 
         valueAnimator?.addUpdateListener { animation ->
-            val drawable = DrawableGradient(GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(animation.animatedValue as Int, surfaceColor), 0)
+            val drawable = DrawableGradient(
+                GradientDrawable.Orientation.TOP_BOTTOM,
+                intArrayOf(animation.animatedValue as Int, surfaceColor),
+                0
+            )
             player_container.background = drawable
         }
         valueAnimator?.setDuration(1000)?.start()
@@ -1033,7 +1219,12 @@ class PlayerFragment : BaseMusicFragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_SELECT_LYRIC && resultCode == Activity.RESULT_OK) {
             data?.data?.let { uri ->
-                SPUtil.putValue(context, SPUtil.LYRIC_KEY.NAME, song.id.toString(), SPUtil.LYRIC_KEY.LYRIC_MANUAL)
+                SPUtil.putValue(
+                    context,
+                    SPUtil.LYRIC_KEY.NAME,
+                    song.id.toString(),
+                    SPUtil.LYRIC_KEY.LYRIC_MANUAL
+                )
                 lyricFragment.updateLrc(uri)
                 Util.sendLocalBroadcast(MusicUtil.makeCmdIntent(Command.CHANGE_LYRIC))
             }
