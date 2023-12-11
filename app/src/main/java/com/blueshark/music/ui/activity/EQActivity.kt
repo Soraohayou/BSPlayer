@@ -82,6 +82,7 @@ class EQActivity : ToolbarActivity() {
       layout.eqSeekbar.max = EQHelper.maxLevel - EQHelper.minLevel
       layout.eqSeekbar.progress = EQHelper.getBandLevel(i) - EQHelper.minLevel
       layout.eqSeekbar.isEnabled = EQHelper.enable
+      layout.eqSeekbar.thumb = resources.getDrawable(R.mipmap.eq_seekbar_indicator)
       TintHelper.setTint(layout.eqSeekbar, accentColor, false)
       layout.eqSeekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
         override fun onProgressChanged(

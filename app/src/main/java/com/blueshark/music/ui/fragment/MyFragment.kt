@@ -38,22 +38,31 @@ import java.io.File
 class MyFragment : BaseMusicFragment(), SharedPreferences.OnSharedPreferenceChangeListener {
 
 
-    private val scanSize = intArrayOf(0, 500 * Constants.KB, Constants.MB, 2 * Constants.MB, 5 * Constants.MB)
+    private val scanSize =
+        intArrayOf(0, 500 * Constants.KB, Constants.MB, 2 * Constants.MB, 5 * Constants.MB)
 
     private val disposables = ArrayList<Disposable>()
 
     private var pendingExportPlaylist: String? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_me, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-      //  top_bar.setBackgroundColor(ThemeStore.materialPrimaryColor)
-        me_setting.setImageDrawable(activity?.let { Theme.tintVectorDrawable(it, R.drawable.setting, if (ColorUtil.isColorCloseToWhite(ThemeStore.materialPrimaryColor)) Color.BLACK else Color.WHITE) })
+        //  top_bar.setBackgroundColor(ThemeStore.materialPrimaryColor)
+        me_setting.setImageDrawable(activity?.let {
+            Theme.tintVectorDrawable(
+                it,
+                R.drawable.setting,
+                if (ColorUtil.isColorCloseToWhite(ThemeStore.materialPrimaryColor)) Color.BLACK else Color.WHITE
+            )
+        })
         me_title1.setTextColor(ThemeStore.accentColor)
 
         me_setting.setOnClickListener({
@@ -70,12 +79,22 @@ class MyFragment : BaseMusicFragment(), SharedPreferences.OnSharedPreferenceChan
 
         layout4.setOnClickListener({
             Timber.v("发送Exit广播")
-            activity?.sendBroadcast(Intent(Constants.ACTION_EXIT).setComponent(ComponentName(
-                requireActivity(), ExitReceiver::class.java)))
+            activity?.sendBroadcast(
+                Intent(Constants.ACTION_EXIT).setComponent(
+                    ComponentName(
+                        requireActivity(), ExitReceiver::class.java
+                    )
+                )
+            )
         })
 
         //锁屏样式
-        val lockScreen = SPUtil.getValue(activity, SPUtil.SETTING_KEY.NAME, SPUtil.SETTING_KEY.LOCKSCREEN, Constants.BSPLAYER_LOCKSCREEN)
+        val lockScreen = SPUtil.getValue(
+            activity,
+            SPUtil.SETTING_KEY.NAME,
+            SPUtil.SETTING_KEY.LOCKSCREEN,
+            Constants.BSPLAYER_LOCKSCREEN
+        )
 
         name.setTextColor(if (ColorUtil.isColorCloseToWhite(ThemeStore.materialPrimaryColor)) Color.BLACK else Color.WHITE)
 
@@ -110,12 +129,22 @@ class MyFragment : BaseMusicFragment(), SharedPreferences.OnSharedPreferenceChan
                 break
             }
         }
-        Theme.getBaseDialog(activity).title(R.string.set_filter_size).items("0K", "500K", "1MB", "2MB", "5MB").itemsCallbackSingleChoice(position) { dialog, itemView, which, text ->
-            SPUtil.putValue(activity, SPUtil.SETTING_KEY.NAME, SPUtil.SETTING_KEY.SCAN_SIZE, scanSize[which])
-            MediaStoreUtil.SCAN_SIZE = scanSize[which]
-            activity?.contentResolver?.notifyChange(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null)
-            true
-        }.show()
+        Theme.getBaseDialog(activity).title(R.string.set_filter_size)
+            .items("0K", "500K", "1MB", "2MB", "5MB")
+            .itemsCallbackSingleChoice(position) { dialog, itemView, which, text ->
+                SPUtil.putValue(
+                    activity,
+                    SPUtil.SETTING_KEY.NAME,
+                    SPUtil.SETTING_KEY.SCAN_SIZE,
+                    scanSize[which]
+                )
+                MediaStoreUtil.SCAN_SIZE = scanSize[which]
+                activity?.contentResolver?.notifyChange(
+                    MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                    null
+                )
+                true
+            }.show()
     }
 
     /**
@@ -133,28 +162,36 @@ class MyFragment : BaseMusicFragment(), SharedPreferences.OnSharedPreferenceChan
             )
         })
 
-        Theme.getCustomDialog(activity).items(items).contentColor(Color.WHITE).titleGravity(GravityEnum.CENTER).itemsCallback { dialog, itemView, position, text ->
-            Theme.getBaseDialog(activity).title(R.string.remove_from_blacklist).content(
-                getString(
-                    R.string.do_you_want_remove_from_blacklist, text
-                )
-            ).onPositive { dialog, which ->
-                val mutableSet = LinkedHashSet<String>(blackList)
-                val it = mutableSet.iterator()
-                while (it.hasNext()) {
-                    if (it.next().contentEquals(text)) {
-                        it.remove()
-                        break
-                    }
-                }
-                SPUtil.putStringSet(
-                    activity, SPUtil.SETTING_KEY.NAME, SPUtil.SETTING_KEY.BLACKLIST, mutableSet
-                )
-                activity?.contentResolver?.notifyChange(
-                    MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null
-                )
-            }.positiveText(R.string.confirm).negativeText(R.string.cancel).show()
-        }.title(R.string.blacklist)
+        Theme.getCustomDialog(activity).items(items).contentColor(Color.WHITE)
+            .titleGravity(GravityEnum.CENTER).itemsCallbackMultiChoice(
+                null
+            ) { dialog, which, text ->
+                Theme.getBaseDialog(activity).title(R.string.remove_from_blacklist).content(
+                    getString(
+                        R.string.do_you_want_remove_from_blacklist, text
+                    )
+                ).titleColor(Color.WHITE)
+                    .contentColor(Color.WHITE).onPositive { dialog, which ->
+                        val mutableSet = LinkedHashSet<String>(blackList)
+                        val it = mutableSet.iterator()
+                        while (it.hasNext()) {
+                            if (text.contains(it.next())) {
+                                it.remove()
+                                break
+                            }
+                        }
+                        SPUtil.putStringSet(
+                            activity,
+                            SPUtil.SETTING_KEY.NAME,
+                            SPUtil.SETTING_KEY.BLACKLIST,
+                            mutableSet
+                        )
+                        activity?.contentResolver?.notifyChange(
+                            MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null
+                        )
+                    }.positiveText(R.string.confirm).negativeText(R.string.cancel).show()
+                true
+            }.title(R.string.blacklist)
             //.neutralText(R.string.clear)
             .negativeText(R.string.close).positiveText(R.string.add).onAny { dialog, which ->
                 when (which) {
@@ -209,7 +246,7 @@ class MyFragment : BaseMusicFragment(), SharedPreferences.OnSharedPreferenceChan
                             }).show()
                     }
                 }
-            }.show()
+            }.alwaysCallMultiChoiceCallback().show()
     }
 
     /**
@@ -217,10 +254,27 @@ class MyFragment : BaseMusicFragment(), SharedPreferences.OnSharedPreferenceChan
      */
     private fun configLockScreen() {
         //0:BSPlayer锁屏 1:系统锁屏 2:关闭
-        Theme.getBaseDialog(activity).title(R.string.lockscreen_show).title(R.string.lockscreen_show).items(getString(R.string.bsplayer_lockscreen), getString(R.string.system_lockscreen), getString(R.string.close)).positiveText(R.string.confirm).itemsCallbackSingleChoice(SPUtil.getValue(activity, SPUtil.SETTING_KEY.NAME, SPUtil.SETTING_KEY.LOCKSCREEN, Constants.BSPLAYER_LOCKSCREEN)) { dialog, view, which, text ->
-            SPUtil.putValue(activity, SPUtil.SETTING_KEY.NAME, SPUtil.SETTING_KEY.LOCKSCREEN, which)
-            true
-        }.show()
+        Theme.getBaseDialog(activity).title(R.string.lockscreen_show)
+            .title(R.string.lockscreen_show).items(
+                getString(R.string.bsplayer_lockscreen),
+                getString(R.string.system_lockscreen),
+                getString(R.string.close)
+            ).positiveText(R.string.confirm).itemsCallbackSingleChoice(
+                SPUtil.getValue(
+                    activity,
+                    SPUtil.SETTING_KEY.NAME,
+                    SPUtil.SETTING_KEY.LOCKSCREEN,
+                    Constants.BSPLAYER_LOCKSCREEN
+                )
+            ) { dialog, view, which, text ->
+                SPUtil.putValue(
+                    activity,
+                    SPUtil.SETTING_KEY.NAME,
+                    SPUtil.SETTING_KEY.LOCKSCREEN,
+                    which
+                )
+                true
+            }.show()
     }
 
     /**
@@ -228,57 +282,89 @@ class MyFragment : BaseMusicFragment(), SharedPreferences.OnSharedPreferenceChan
      */
     @SuppressLint("CheckResult")
     private fun importPlayList() {
-        Theme.getBaseDialog(activity).title(R.string.choose_import_way).positiveText(R.string.cancel).items(getString(R.string.import_from_external_storage), getString(R.string.import_from_others)).itemsCallback { _, _, select, _ ->
-            if (select == 0) {
-                val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
-                    type = MimeTypeMap.getSingleton().getMimeTypeFromExtension("m3u")
-                    addCategory(Intent.CATEGORY_OPENABLE)
-                }
-                activity?.let { Util.startActivityForResultSafely(it, intent, MyFragment.REQUEST_IMPORT_PLAYLIST) }
-            } else {
-                Single.fromCallable { DatabaseRepository.getInstance().playlistFromMediaStore }.compose(RxUtil.applySingleScheduler()).subscribe({ localPlayLists ->
-                    if (localPlayLists == null || localPlayLists.isEmpty()) {
-                        ToastUtil.show(activity, R.string.import_fail, getString(R.string.no_playlist_can_import))
-                        return@subscribe
+        Theme.getBaseDialog(activity).title(R.string.choose_import_way)
+            .positiveText(R.string.cancel).items(
+                getString(R.string.import_from_external_storage),
+                getString(R.string.import_from_others)
+            ).itemsCallback { _, _, select, _ ->
+                if (select == 0) {
+                    val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
+                        type = MimeTypeMap.getSingleton().getMimeTypeFromExtension("m3u")
+                        addCategory(Intent.CATEGORY_OPENABLE)
                     }
-                    val selectedIndices = ArrayList<Int>()
-                    for (i in 0 until localPlayLists.size) {
-                        selectedIndices.add(i)
+                    activity?.let {
+                        Util.startActivityForResultSafely(
+                            it,
+                            intent,
+                            MyFragment.REQUEST_IMPORT_PLAYLIST
+                        )
                     }
-                    Theme.getBaseDialog(activity).title(R.string.choose_import_playlist).positiveText(R.string.choose).items(localPlayLists.keys).itemsCallbackMultiChoice(selectedIndices.toTypedArray()) { dialog1, which, allSelects ->
-                        activity?.let { M3UHelper.importLocalPlayList(it, localPlayLists, allSelects) }
-                            ?.let { disposables.add(it) }
-                        true
-                    }.show()
+                } else {
+                    Single.fromCallable { DatabaseRepository.getInstance().playlistFromMediaStore }
+                        .compose(RxUtil.applySingleScheduler()).subscribe({ localPlayLists ->
+                            if (localPlayLists == null || localPlayLists.isEmpty()) {
+                                ToastUtil.show(
+                                    activity,
+                                    R.string.import_fail,
+                                    getString(R.string.no_playlist_can_import)
+                                )
+                                return@subscribe
+                            }
+                            val selectedIndices = ArrayList<Int>()
+                            for (i in 0 until localPlayLists.size) {
+                                selectedIndices.add(i)
+                            }
+                            Theme.getBaseDialog(activity).title(R.string.choose_import_playlist)
+                                .positiveText(R.string.choose).items(localPlayLists.keys)
+                                .itemsCallbackMultiChoice(selectedIndices.toTypedArray()) { dialog1, which, allSelects ->
+                                    activity?.let {
+                                        M3UHelper.importLocalPlayList(
+                                            it,
+                                            localPlayLists,
+                                            allSelects
+                                        )
+                                    }
+                                        ?.let { disposables.add(it) }
+                                    true
+                                }.show()
 
-                }, { throwable ->
-                    ToastUtil.show(activity, R.string.import_fail, throwable.toString())
-                })
-            }
-        }.theme(ThemeStore.mDDialogTheme).show()
+                        }, { throwable ->
+                            ToastUtil.show(activity, R.string.import_fail, throwable.toString())
+                        })
+                }
+            }.theme(ThemeStore.mDDialogTheme).show()
     }
 
     /**
      * 播放列表导出
      */
     private fun exportPlayList() {
-        disposables.add(DatabaseRepository.getInstance().getAllPlaylist().map<List<String>> { playLists ->
-            val allplayListNames = ArrayList<String>()
-            for ((_, name) in playLists) {
-                allplayListNames.add(name)
-            }
-            allplayListNames
-        }.compose(RxUtil.applySingleScheduler()).subscribe { allPlayListNames ->
-            Theme.getBaseDialog(activity).title(R.string.choose_playlist_to_export).positiveText(R.string.cancel).items(allPlayListNames).itemsCallback { _, _, _, text ->
-                pendingExportPlaylist = text.toString()
-                val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
-                    type = MimeTypeMap.getSingleton().getMimeTypeFromExtension("m3u")
-                    addCategory(Intent.CATEGORY_OPENABLE)
-                    putExtra(Intent.EXTRA_TITLE, "$text.m3u")
+        disposables.add(
+            DatabaseRepository.getInstance().getAllPlaylist().map<List<String>> { playLists ->
+                val allplayListNames = ArrayList<String>()
+                for ((_, name) in playLists) {
+                    allplayListNames.add(name)
                 }
-                activity?.let { Util.startActivityForResultSafely(it, intent, MyFragment.REQUEST_EXPORT_PLAYLIST) }
-            }.show()
-        })
+                allplayListNames
+            }.compose(RxUtil.applySingleScheduler()).subscribe { allPlayListNames ->
+                Theme.getBaseDialog(activity).title(R.string.choose_playlist_to_export)
+                    .positiveText(R.string.cancel).items(allPlayListNames)
+                    .itemsCallback { _, _, _, text ->
+                        pendingExportPlaylist = text.toString()
+                        val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+                            type = MimeTypeMap.getSingleton().getMimeTypeFromExtension("m3u")
+                            addCategory(Intent.CATEGORY_OPENABLE)
+                            putExtra(Intent.EXTRA_TITLE, "$text.m3u")
+                        }
+                        activity?.let {
+                            Util.startActivityForResultSafely(
+                                it,
+                                intent,
+                                MyFragment.REQUEST_EXPORT_PLAYLIST
+                            )
+                        }
+                    }.show()
+            })
     }
 
     /**
@@ -313,7 +399,12 @@ class MyFragment : BaseMusicFragment(), SharedPreferences.OnSharedPreferenceChan
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String) {
         if (key == SPUtil.SETTING_KEY.DESKTOP_LYRIC_SHOW) {
             setting_lrc_float_switch.setOnCheckedChangeListener(null)
-            setting_lrc_float_switch.isChecked = SPUtil.getValue(activity, SPUtil.SETTING_KEY.NAME, SPUtil.SETTING_KEY.DESKTOP_LYRIC_SHOW, false)
+            setting_lrc_float_switch.isChecked = SPUtil.getValue(
+                activity,
+                SPUtil.SETTING_KEY.NAME,
+                SPUtil.SETTING_KEY.DESKTOP_LYRIC_SHOW,
+                false
+            )
             setting_lrc_float_switch.setOnCheckedChangeListener(checkedChangedListener)
         }
     }

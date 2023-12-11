@@ -17,6 +17,7 @@
       <!-- 顶部自定义actionbar、-->
       <include
           layout="@layout/layout_player_topbar"
+          android:visibility="gone"
           android:id="@+id/top_actionbar"/>
 
       <RelativeLayout

@@ -81,9 +81,10 @@
         android:lines="1"
         android:textColor="?attr/text_color_secondary"
         android:textSize="@dimen/s12_size"
+        android:layout_marginStart="9dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/song_title"
-        app:layout_constraintStart_toStartOf="@id/song_title"
+        app:layout_constraintStart_toEndOf="@id/tv"
         app:layout_constraintTop_toBottomOf="@+id/song_title"
         tools:text="周杰伦" />
 
@@ -111,5 +112,20 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/icon_sq"
         tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/song_other"
+        app:layout_constraintStart_toStartOf="@id/song_title"
+        app:layout_constraintBottom_toBottomOf="@id/song_other"
+        android:gravity="center"
+        android:textColor="#D79F23"
+        android:background="@drawable/bg_song_item_master"
+        android:textSize="6sp"
+        android:paddingHorizontal="3dp"
+        android:paddingVertical="1dp"
+        android:text="超级母带"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

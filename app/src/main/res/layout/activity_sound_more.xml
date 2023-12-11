@@ -148,8 +148,8 @@
 
                 <ImageView
                     android:id="@+id/image3"
-                    android:layout_width="@dimen/d24_size"
-                    android:layout_height="@dimen/d24_size"
+                    android:layout_width="6dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/d2_size"
 
                     android:src="@drawable/more_select"

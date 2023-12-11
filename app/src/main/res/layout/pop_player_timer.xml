@@ -18,6 +18,7 @@
         app:layout_constraintTop_toTopOf="parent"/>
 
     <CheckBox
+        android:id="@+id/pop_timer_exitAfterFinish"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
@@ -40,13 +41,14 @@
         android:paddingHorizontal="@dimen/d12_size"
         android:paddingVertical="8dp"
         android:background="@drawable/bg_pop_timer_layout"
-        android:layout_marginVertical="84dp">
+        android:layout_marginVertical="28dp">
 
         <Button
             android:id="@+id/pop_timer_button1"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:background="@drawable/pop_player_timer_item"
+            android:background="@null"
+            android:textColor="@color/white"
             android:text="关闭"
             android:layout_height="wrap_content"/>
 

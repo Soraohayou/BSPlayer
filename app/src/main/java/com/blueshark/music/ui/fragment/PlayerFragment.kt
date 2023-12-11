@@ -17,11 +17,14 @@ import android.graphics.drawable.LayerDrawable
 import android.media.AudioManager
 import android.os.Bundle
 import android.os.Message
+import android.util.Log
 import android.view.*
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.animation.Animation.AnimationListener
 import android.webkit.MimeTypeMap
+import android.widget.Button
+import android.widget.CheckBox
 import android.widget.CompoundButton
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -50,6 +53,7 @@ import com.blueshark.music.helper.MusicServiceRemote.getPlayModel
 import com.blueshark.music.helper.MusicServiceRemote.getProgress
 import com.blueshark.music.helper.MusicServiceRemote.isPlaying
 import com.blueshark.music.helper.MusicServiceRemote.setPlayModel
+import com.blueshark.music.helper.SleepTimer
 import com.blueshark.music.lyric.LrcView
 import com.blueshark.music.lyric.LrcView.OnLrcClickListener
 import com.blueshark.music.misc.handler.MsgHandler
@@ -78,6 +82,7 @@ import com.blueshark.music.ui.fragment.base.BaseMusicFragment
 import com.blueshark.music.ui.fragment.player.CircleCoverFragment
 import com.blueshark.music.ui.fragment.player.CoverFragment
 import com.blueshark.music.ui.fragment.player.SongInfoFragment
+import com.blueshark.music.ui.misc.AudioTag
 import com.blueshark.music.util.*
 import com.blueshark.music.util.SPUtil.SETTING_KEY
 import com.ijkplay.AudioTaglib.PId3Info
@@ -457,23 +462,67 @@ class PlayerFragment : BaseMusicFragment() {
                             }
 
                             R.id.menu_edit -> {
+                                val audioTag = AudioTag(this.activity as BaseActivity, song)
+                                audioTag.edit()
                             }
 
                             R.id.menu_timer -> {
-                                //  val fm = activity?.supportFragmentManager ?: return true
-                                /*activity?.let { it1 ->
-                                    TimerDialog.newInstance().show(
-                                        it1.supportFragmentManager,
-                                        TimerDialog::class.java.simpleName
-                                    )
-                                }*/
                                 var popupWindow2 = PopupWindow()
                                 var popRootView2 = LayoutInflater.from(requireContext()).inflate(
                                     R.layout.pop_player_timer, null, false
                                 )
-                                var pupupContent2 = popRootView2.findViewById(R.id.pop_timer_layout) as LinearLayout;
+                                var pupupContent2 = popRootView2.findViewById(R.id.pop_timer_layout) as LinearLayout
+                                // 读取保存的配置
+                                val exitAfterFinish = SPUtil.getValue(
+                                    context, SETTING_KEY.NAME, SETTING_KEY.TIMER_EXIT_AFTER_FINISH, false
+                                )
+                                var pupupExitAfterFinish = popRootView2.findViewById(R.id.pop_timer_exitAfterFinish) as CheckBox
+                                pupupExitAfterFinish.isChecked = exitAfterFinish
+                                pupupExitAfterFinish.setOnCheckedChangeListener { _, isChecked ->
+                                    SPUtil.putValue(
+                                        context,
+                                        SETTING_KEY.NAME,
+                                        SETTING_KEY.TIMER_EXIT_AFTER_FINISH,
+                                        isChecked
+                                    )
+                                }
+                                var process = (SleepTimer.getMillisUntilFinish() / 1000).toInt();
+                                var processMin = process / 600
                                 pupupContent2.forEachChild { item1 ->
 
+                                    if (processMin >= 0 && processMin < 1 && item1.id == R.id.pop_timer_button1){
+                                        item1.background = context?.getDrawable(R.drawable.pop_player_timer_item)
+                                        (item1 as Button).setTextColor(Color.BLACK)
+                                    }else if (processMin >= 1 && processMin < 2 && item1.id == R.id.pop_timer_button2){
+                                        item1.background = context?.getDrawable(R.drawable.pop_player_timer_item)
+                                        (item1 as Button).setTextColor(Color.BLACK)
+                                    }else if (processMin >= 2 && processMin < 3 && item1.id == R.id.pop_timer_button3){
+                                        item1.background = context?.getDrawable(R.drawable.pop_player_timer_item)
+                                        (item1 as Button).setTextColor(Color.BLACK)
+                                    }else if (processMin >= 3 && processMin < 6 && item1.id == R.id.pop_timer_button4){
+                                        item1.background = context?.getDrawable(R.drawable.pop_player_timer_item)
+                                        (item1 as Button).setTextColor(Color.BLACK)
+                                    }else if (processMin >= 6 && processMin < 9  && item1.id == R.id.pop_timer_button5){
+                                        item1.background = context?.getDrawable(R.drawable.pop_player_timer_item)
+                                        (item1 as Button).setTextColor(Color.BLACK)
+                                    }
+
+                                    item1.setOnClickListener{ view->
+                                        if (item1.id == R.id.pop_timer_button1){
+                                            SleepTimer.toggleTimer(0.toLong())
+                                        }else if (item1.id == R.id.pop_timer_button2){
+                                            SleepTimer.toggleTimer((10*60 * 1000).toLong())
+                                        }else if (item1.id == R.id.pop_timer_button3){
+                                            SleepTimer.toggleTimer((20*60 * 1000).toLong())
+                                        }else if (item1.id == R.id.pop_timer_button4){
+                                            SleepTimer.toggleTimer((30*60 * 1000).toLong())
+                                        }else if (item1.id == R.id.pop_timer_button5){
+                                            SleepTimer.toggleTimer((60*60 * 1000).toLong())
+                                        }else if (item1.id == R.id.pop_timer_button6){
+                                            SleepTimer.toggleTimer((90*60 * 1000).toLong())
+                                        }
+                                        popupWindow2.dismiss()
+                                    }
                                 }
                                 popupWindow2.contentView = popRootView2
                                 popupWindow2.width = WindowManager.LayoutParams.MATCH_PARENT

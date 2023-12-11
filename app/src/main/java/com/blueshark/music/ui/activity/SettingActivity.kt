@@ -669,7 +669,7 @@ class SettingActivity : ToolbarActivity(), ColorChooserDialog.ColorCallback,
         }
         val index = intArrayOf(currentSetting);
         getBaseDialog(this).title("选择色彩方式").items(R.array.dark_theme)
-            .itemsCallbackMultiChoice(index.toTypedArray()) {  dialog1, which, allSelects ->
+            .itemsCallbackMultiChoice(index.toTypedArray()) { dialog1, which, allSelects ->
                 val which1 = which.filter { item ->
                     item != index[0]
                 }
@@ -836,31 +836,31 @@ class SettingActivity : ToolbarActivity(), ColorChooserDialog.ColorCallback,
                 R.string.never
             )
         ).itemsCallbackMultiChoice(
-                index.toTypedArray()
-            ) { dialog1, which, allSelects ->
-                val which1 = which.filter { item ->
-                    item != index[0]
-                }
-                if (which1.isNotEmpty()) {
+            index.toTypedArray()
+        ) { dialog1, which, allSelects ->
+            val which1 = which.filter { item ->
+                item != index[0]
+            }
+            if (which1.isNotEmpty()) {
 
-                    val text = when(which1[0]){
-                        1->getString(R.string.wifi_only)
-                        0->getString(R.string.always)
-                        else -> getString(R.string.never)
-                    }
-
-                    binding.settingAlbumCoverText.text = text
-                    //仅从从不改变到仅在wifi下或者总是的情况下，才刷新Adapter
-                    needRefreshAdapter =
-                        needRefreshAdapter || (getString(R.string.wifi_only) == text && getString(R.string.always) == text && originalAlbumChoice != text)
-                    clearDownloadCover(text)
-                    SPUtil.putValue(
-                        this, SETTING_KEY.NAME, SETTING_KEY.AUTO_DOWNLOAD_ALBUM_COVER, text
-                    )
+                val text = when (which1[0]) {
+                    1 -> getString(R.string.wifi_only)
+                    0 -> getString(R.string.always)
+                    else -> getString(R.string.never)
                 }
-                dialog1.dismiss()
-                true
-            }.alwaysCallMultiChoiceCallback().show()
+
+                binding.settingAlbumCoverText.text = text
+                //仅从从不改变到仅在wifi下或者总是的情况下，才刷新Adapter
+                needRefreshAdapter =
+                    needRefreshAdapter || (getString(R.string.wifi_only) == text && getString(R.string.always) == text && originalAlbumChoice != text)
+                clearDownloadCover(text)
+                SPUtil.putValue(
+                    this, SETTING_KEY.NAME, SETTING_KEY.AUTO_DOWNLOAD_ALBUM_COVER, text
+                )
+            }
+            dialog1.dismiss()
+            true
+        }.alwaysCallMultiChoiceCallback().show()
 
         /*    .itemsCallbackSingleChoice(
             index.toTypedArray()
@@ -899,10 +899,9 @@ class SettingActivity : ToolbarActivity(), ColorChooserDialog.ColorCallback,
      * 清除缓存
      */
     private fun clearCache() {
-        getBaseDialog(this).content(R.string.confirm_clear_cache).contentColor(Color.WHITE).title("清除缓存")
-            .titleGravity(GravityEnum.CENTER)
-            .positiveText(R.string.confirm).negativeText(R.string.cancel)
-            .onPositive { dialog, which ->
+        getBaseDialog(this).content(R.string.confirm_clear_cache).contentColor(Color.WHITE)
+            .title("清除缓存").titleGravity(GravityEnum.CENTER).positiveText(R.string.confirm)
+            .negativeText(R.string.cancel).onPositive { dialog, which ->
                 GlideApp.get(this@SettingActivity).clearMemory()
                 Completable.fromAction {
                     //清除歌词，封面等缓存
@@ -1057,6 +1056,7 @@ class SettingActivity : ToolbarActivity(), ColorChooserDialog.ColorCallback,
      * 设置黑名单
      */
     private fun configBlackList() {
+
         val blackList: Set<String> =
             SPUtil.getStringSet(this, SETTING_KEY.NAME, SETTING_KEY.BLACKLIST)
         val items = ArrayList<String>(blackList)
@@ -1068,27 +1068,31 @@ class SettingActivity : ToolbarActivity(), ColorChooserDialog.ColorCallback,
             )
         })
 
-        getCustomDialog(this).items(items).contentColor(Color.WHITE).itemsCallback { dialog, itemView, position, text ->
-            getBaseDialog(this).title(R.string.remove_from_blacklist).content(
-                getString(
-                    R.string.do_you_want_remove_from_blacklist, text
-                )
-            ).onPositive { dialog, which ->
-                val mutableSet = LinkedHashSet<String>(blackList)
-                val it = mutableSet.iterator()
-                while (it.hasNext()) {
-                    if (it.next().contentEquals(text)) {
-                        it.remove()
-                        break
+        val selected = ArrayList<Int>()
+
+        getCustomDialog(this).items(items).contentColor(Color.WHITE)/*.itemsCallback { dialog, itemView, position, text ->
+
+            }*/.itemsCallbackMultiChoice(
+            selected.toTypedArray()
+        ) { dialog, which, text ->
+            getBaseDialog(this).title(R.string.remove_from_blacklist).titleColor(Color.WHITE)
+                .contentColor(Color.WHITE).onPositive { dialog, which ->
+                    val mutableSet = LinkedHashSet<String>(blackList)
+                    val it = mutableSet.iterator()
+                    while (it.hasNext()) {
+                        if (text.contains(it.next())) {
+                            it.remove()
+                            break
+                        }
                     }
-                }
-                SPUtil.putStringSet(
-                    this, SETTING_KEY.NAME, SETTING_KEY.BLACKLIST, mutableSet
-                )
-                contentResolver.notifyChange(
-                    MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null
-                )
-            }.positiveText(R.string.confirm).negativeText(R.string.cancel).show()
+                    SPUtil.putStringSet(
+                        this, SETTING_KEY.NAME, SETTING_KEY.BLACKLIST, mutableSet
+                    )
+                    contentResolver.notifyChange(
+                        MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null
+                    )
+                }.positiveText(R.string.confirm).negativeText(R.string.cancel).show()
+            true
         }.title(R.string.blacklist)
             //.neutralText(R.string.clear)
             .negativeText(R.string.close).positiveText(R.string.add).onAny { dialog, which ->
@@ -1144,7 +1148,7 @@ class SettingActivity : ToolbarActivity(), ColorChooserDialog.ColorCallback,
                             }).show()
                     }
                 }
-            }.show()
+            }.alwaysCallMultiChoiceCallback().show()
     }
 
     private fun changeBottomOfPlayingScreen() {
